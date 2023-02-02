@@ -15,7 +15,6 @@ import BoardAdmin from "./components/BoardAdmin";
 import EventBus from "./common/EventBus";
 
 const App: React.FC = () => {
-  const [showModeratorBoard, setShowModeratorBoard] = useState<boolean>(false);
   const [showAdminBoard, setShowAdminBoard] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
 
@@ -24,8 +23,6 @@ const App: React.FC = () => {
 
     if (user) {
       setCurrentUser(user);
-      setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
-      setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
 
     EventBus.on("logout", logOut);
@@ -37,7 +34,6 @@ const App: React.FC = () => {
 
   const logOut = () => {
     AuthService.logout();
-    setShowModeratorBoard(false);
     setShowAdminBoard(false);
     setCurrentUser(undefined);
   };
@@ -68,7 +64,7 @@ const App: React.FC = () => {
         {currentUser ? (
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
-              <Link to={"/profile"} className="nav-link">
+              <Link to={"/admin"} className="nav-link">
                 {currentUser.username}
               </Link>
             </li>
