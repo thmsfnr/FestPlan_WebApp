@@ -9,11 +9,7 @@ import * as AuthService from "./services/auth.service";
 import IUser from './types/user.type';
 
 import Login from "./components/Login";
-import Register from "./components/Register";
 import Home from "./components/Home";
-import Profile from "./components/Profile";
-import BoardUser from "./components/BoardUser";
-import BoardModerator from "./components/BoardModerator";
 import BoardAdmin from "./components/BoardAdmin";
 
 import EventBus from "./common/EventBus";
@@ -59,14 +55,6 @@ const App: React.FC = () => {
             </Link>
           </li>
 
-          {showModeratorBoard && (
-            <li className="nav-item">
-              <Link to={"/mod"} className="nav-link">
-                Moderator Board
-              </Link>
-            </li>
-          )}
-
           {showAdminBoard && (
             <li className="nav-item">
               <Link to={"/admin"} className="nav-link">
@@ -75,13 +63,6 @@ const App: React.FC = () => {
             </li>
           )}
 
-          {currentUser && (
-            <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-                User
-              </Link>
-            </li>
-          )}
         </div>
 
         {currentUser ? (
@@ -104,12 +85,6 @@ const App: React.FC = () => {
                 Login
               </Link>
             </li>
-
-            <li className="nav-item">
-              <Link to={"/register"} className="nav-link">
-                Sign Up
-              </Link>
-            </li>
           </div>
         )}
       </nav>
@@ -119,10 +94,6 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/user" element={<BoardUser />} />
-          <Route path="/mod" element={<BoardModerator />} />
           <Route path="/admin" element={<BoardAdmin />} />
         </Routes>
       </div>

@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect } from "react";
 
-import { getUserBoard } from "../services/user.service";
+import { getAdminBoard } from "../services/user.service";
 
-const BoardUser: React.FC = () => {
+const BoardAdmin: React.FC = () => {
   const [content, setContent] = useState<string>("");
 
   useEffect(() => {
-    getUserBoard().then(
+    getAdminBoard().then(
       (response) => {
         setContent(response.data);
       },
@@ -33,4 +33,4 @@ const BoardUser: React.FC = () => {
   );
 };
 
-export default BoardUser;
+export default BoardAdmin;
