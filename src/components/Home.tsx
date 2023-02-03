@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 
-import { getPublicContent } from "../services/user.service";
+import { getPublicContent } from "../services/test.service";
+import { getZone } from "../services/zone.service";
 
 const Home: React.FC = () => {
   const [content, setContent] = useState<string>("");
@@ -17,7 +18,12 @@ const Home: React.FC = () => {
           error.message ||
           error.toString();
 
-        setContent(_content);
+        //setContent(_content);
+      }
+    );
+    getZone().then(
+      (response) => {
+        setContent(response);
       }
     );
   }, []);
