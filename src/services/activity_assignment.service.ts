@@ -3,45 +3,47 @@ import axios from "axios";
 import authHeader from "./auth-header";
 import { url } from "../config/api";
 
-const API_URL = url + "/admin/";
+const API_URL = url + "/activityAssignment/";
 
-// Create a new user
-export const createUser = (username: string, password: string) => {
+// Create a new activity assignment
+export const createActivityAssignment = (activity: number, zone: number) => {
+    let elem: Record<string, any> = {
+        headers: authHeader(),
+        activity,
+        zone
+    }
     return axios
-        .post(API_URL, {
-            headers: authHeader(),
-            username,
-            password
-        })
+        .post(API_URL, elem)
         .then((response) => {
             return response.data;
         });
 };
 
-// Get users depending on the parameters
-export const getUser = (username?: string) => {
+// Get activity assignments depending on the parameters
+export const getActivityAssignment = (activity?: number, zone?: number) => {
     let elem: Record<string, any> = {}
-    if (username) {
-        elem.username = username
+    if (activity) {
+        elem.activity = activity
+    }
+    if (zone) {
+        elem.zone = zone
     }
     let stringifiedElem: string= JSON.stringify(elem)
     return axios
-        .get(API_URL + stringifiedElem, {headers: authHeader()})
+        .get(API_URL + stringifiedElem)
         .then((response) => {
             return response.data;
         });
 };
 
-// Update a user
-export const updateUser = (username: string, password?: string) => {
+// Update an activity assignment
+export const updateActivityAssignment = (activity: number, zone: number) => {
     let body: Record<string, any> = {
         headers: authHeader()
     }
-    if (password) {
-        body.password = password
-    }
     let params: Record<string, any> = {
-        username: username
+        activity: activity,
+        zone: zone
     }
     let stringifiedParams: string= JSON.stringify(params)
     return axios
@@ -51,10 +53,11 @@ export const updateUser = (username: string, password?: string) => {
         });
 }
 
-// Delete a user
-export const deleteUser = (username: string) => {
+// Delete an activity assignment
+export const deleteActivityAssignment = (activity: number, zone: number) => {
     let elem: Record<string, any> = {
-        username: username
+        activity,
+        zone
     }
     let stringifiedElem: string= JSON.stringify(elem)
     return axios

@@ -1,8 +1,10 @@
 
 import axios from "axios";
+import { url } from "../config/api";
 
-const API_URL = "http://localhost:8080/api/auth/";
+const API_URL = url + "/auth/";
 
+// Login action
 export const login = (username: string, password: string) => {
   return axios
     .post(API_URL + "signin", {
@@ -18,10 +20,12 @@ export const login = (username: string, password: string) => {
     });
 };
 
+// Logout action
 export const logout = () => {
   localStorage.removeItem("user");
 };
 
+// Get the current user
 export const getCurrentUser = () => {
   const userStr = localStorage.getItem("user");
   if (userStr) return JSON.parse(userStr);

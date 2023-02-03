@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { getPublicContent } from "../services/user.service";
+import { getPublicContent } from "../services/test.service";
 
 const Home: React.FC = () => {
   const [content, setContent] = useState<string>("");

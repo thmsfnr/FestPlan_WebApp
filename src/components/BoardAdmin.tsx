@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { getAdminBoard } from "../services/user.service";
+import { getAdminBoard } from "../services/test.service";
 
 const BoardAdmin: React.FC = () => {
   const [content, setContent] = useState<string>("");
