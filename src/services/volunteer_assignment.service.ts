@@ -9,10 +9,11 @@ const API_URL = url + "/volunteerAssignment/";
 export const createVolunteerAssignment = (volunteer: number, slot:number, zone: number) => {
     return axios
         .post(API_URL, {
-            headers: authHeader(),
             volunteer,
             slot,
             zone
+        }, { 
+            headers: authHeader() 
         })
         .then((response) => {
             return response.data;
@@ -41,9 +42,7 @@ export const getVolunteerAssignment = (volunteer?: number, slot?:number, zone?: 
 
 // Update a volunteer assignment
 export const updateVolunteer = (volunteer: number, slot:number, zone?: number) => {
-    let body: Record<string, any> = {
-        headers: authHeader()
-    }
+    let body: Record<string, any> = {}
     if (zone) {
         body.zone = zone
     }
@@ -53,7 +52,9 @@ export const updateVolunteer = (volunteer: number, slot:number, zone?: number) =
     }
     let stringifiedParams: string= JSON.stringify(params)
     return axios
-        .put(API_URL + stringifiedParams, body)
+        .put(API_URL + stringifiedParams, body, { 
+            headers: authHeader() 
+        })
         .then((response) => {
             return response.data;
         });

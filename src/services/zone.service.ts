@@ -9,8 +9,9 @@ const API_URL = url + "/zone/";
 export const createZone = (nameZone: string) => {
     return axios
         .post(API_URL, {
-            headers: authHeader(),
             nameZone
+        }, { 
+            headers: authHeader() 
         })
         .then((response) => {
             return response.data;
@@ -36,14 +37,14 @@ export const getZone = (idZone?: number, nameZone?: string) => {
 
 // Update a zone
 export const updateZone = (idZone: number, nameZone?: string) => {
-    let elem: Record<string, any> = {
-        headers: authHeader()
-    }
+    let elem: Record<string, any> = {}
     if (nameZone) {
         elem.nameZone = nameZone
     }
     return axios
-        .put(API_URL + idZone.toString(), elem)
+        .put(API_URL + idZone, elem, { 
+            headers: authHeader() 
+        })
         .then((response) => {
             return response.data;
         });
@@ -52,7 +53,7 @@ export const updateZone = (idZone: number, nameZone?: string) => {
 // Delete a zone
 export const deleteZone = (idZone: number) => {
     return axios
-        .delete(API_URL + idZone.toString, {
+        .delete(API_URL + idZone, {
             headers: authHeader()
         })
         .then((response) => {

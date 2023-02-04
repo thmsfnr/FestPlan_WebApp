@@ -7,10 +7,14 @@ const API_URL = url + "/test/";
 
 // Test if the user has access to the public content
 export const getPublicContent = () => {
-  return axios.get(API_URL + "public");
+  return axios
+    .get(API_URL + "public");
 };
 
 // Test if the user has access to the admin content
 export const getAdminBoard = () => {
-  return axios.get(API_URL + "admin", { headers: authHeader() });
+  return axios
+    .get(API_URL + "admin", { 
+      headers: authHeader() 
+    });
 };

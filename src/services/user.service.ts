@@ -9,9 +9,10 @@ const API_URL = url + "/admin/";
 export const createUser = (username: string, password: string) => {
     return axios
         .post(API_URL, {
-            headers: authHeader(),
             username,
             password
+        }, { 
+            headers: authHeader() 
         })
         .then((response) => {
             return response.data;
@@ -26,7 +27,9 @@ export const getUser = (username?: string) => {
     }
     let stringifiedElem: string= JSON.stringify(elem)
     return axios
-        .get(API_URL + stringifiedElem, {headers: authHeader()})
+        .get(API_URL + stringifiedElem, { 
+            headers: authHeader()
+        })
         .then((response) => {
             return response.data;
         });
@@ -34,9 +37,7 @@ export const getUser = (username?: string) => {
 
 // Update a user
 export const updateUser = (username: string, password?: string) => {
-    let body: Record<string, any> = {
-        headers: authHeader()
-    }
+    let body: Record<string, any> = {}
     if (password) {
         body.password = password
     }
@@ -45,7 +46,9 @@ export const updateUser = (username: string, password?: string) => {
     }
     let stringifiedParams: string= JSON.stringify(params)
     return axios
-        .put(API_URL + stringifiedParams, body)
+        .put(API_URL + stringifiedParams, body, { 
+            headers: authHeader() 
+        })
         .then((response) => {
             return response.data;
         });

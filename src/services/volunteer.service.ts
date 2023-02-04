@@ -8,7 +8,6 @@ const API_URL = url + "/volunteer/";
 // Create a new volunteer
 export const createVolunteer = (name: string, surname: string, email?: string) => {
     let elem: Record<string, any> = {
-        headers: authHeader(),
         name,
         surname
     }
@@ -16,7 +15,9 @@ export const createVolunteer = (name: string, surname: string, email?: string) =
         elem.email = email
     }
     return axios
-        .post(API_URL, elem)
+        .post(API_URL, elem, { 
+            headers: authHeader() 
+        })
         .then((response) => {
             return response.data;
         });
@@ -47,9 +48,7 @@ export const getVolunteer = (idVolunteer?: number, name?: string, surname?: stri
 
 // Update a volunteer
 export const updateVolunteer = (idVolunteer: number, name?: string, surname?: string, email?: string) => {
-    let elem: Record<string, any> = {
-        headers: authHeader()
-    }
+    let elem: Record<string, any> = {}
     if (name) {
         elem.name = name
     }
@@ -60,7 +59,9 @@ export const updateVolunteer = (idVolunteer: number, name?: string, surname?: st
         elem.email = email
     }
     return axios
-        .put(API_URL + idVolunteer.toString(), elem)
+        .put(API_URL + idVolunteer, elem, { 
+            headers: authHeader() 
+        })
         .then((response) => {
             return response.data;
         });
@@ -69,7 +70,7 @@ export const updateVolunteer = (idVolunteer: number, name?: string, surname?: st
 // Delete a volunteer
 export const deleteVolunteer = (idVolunteer: number) => {
     return axios
-        .delete(API_URL + idVolunteer.toString, {
+        .delete(API_URL + idVolunteer, {
             headers: authHeader()
         })
         .then((response) => {
