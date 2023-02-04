@@ -55,9 +55,9 @@ const BoardAdmin: React.FC = () => {
         </Stack></div>:
         <div>
           {state == "type" ? <Management name={"type"} parent={back} /> : <div></div>}
-          {state == "activity" ? <Management name={"type"} parent={back} /> : <div></div>}
-          {state == "volunteer" ? <Management name={"type"} parent={back} /> : <div></div>}
-          {state == "zone" ? <Management name={"type"} parent={back} /> : <div></div>}
+          {state == "activity" ? <Management name={"activity"} parent={back} /> : <div></div>}
+          {state == "volunteer" ? <Management name={"volunteer"} parent={back} /> : <div></div>}
+          {state == "zone" ? <Management name={"zone"} parent={back} /> : <div></div>}
         </div>
         }
       </header>
