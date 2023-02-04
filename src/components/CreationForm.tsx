@@ -25,7 +25,6 @@ type Props = {
  * @param action The action to do (create or update)
  */
 const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
-
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [elem, setElem] = useState<Record<string, any>>({});
