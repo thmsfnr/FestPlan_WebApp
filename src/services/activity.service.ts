@@ -9,9 +9,10 @@ const API_URL = url + "/activity/";
 export const createActivity = (nameActivity: string, type: number) => {
     return axios
         .post(API_URL, {
-            headers: authHeader(),
             nameActivity,
             type
+        }, { 
+            headers: authHeader() 
         })
         .then((response) => {
             return response.data;
@@ -40,9 +41,7 @@ export const getActivity = (idActivity?: number, nameActivity?: string, type?: n
 
 // Update an activity
 export const updateActivity = (idActivity: number, nameActivity?: string, type?: number) => {
-    let elem: Record<string, any> = {
-        headers: authHeader()
-    }
+    let elem: Record<string, any> = {}
     if (nameActivity) {
         elem.nameActivity = nameActivity
     }
@@ -50,7 +49,9 @@ export const updateActivity = (idActivity: number, nameActivity?: string, type?:
         elem.type = type
     }
     return axios
-        .put(API_URL + idActivity, elem)
+        .put(API_URL + idActivity, elem, { 
+            headers: authHeader() 
+        })
         .then((response) => {
             return response.data;
         });

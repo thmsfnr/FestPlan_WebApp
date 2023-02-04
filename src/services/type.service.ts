@@ -9,8 +9,9 @@ const API_URL = url + "/type/";
 export const createType = (nameType: string) => {
     return axios
         .post(API_URL, {
-            headers: authHeader(),
             nameType
+        }, { 
+            headers: authHeader() 
         })
         .then((response) => {
             return response.data;
@@ -36,14 +37,14 @@ export const getType = (idType?: number, nameType?: string) => {
 
 // Update a type
 export const updateType = (idType: number, nameType?: string) => {
-    let elem: Record<string, any> = {
-        headers: authHeader()
-    }
+    let elem: Record<string, any> = {}
     if (nameType) {
         elem.nameType = nameType
     }
     return axios
-        .put(API_URL + idType, elem)
+        .put(API_URL + idType, elem, { 
+            headers: authHeader() 
+        })
         .then((response) => {
             return response.data;
         });

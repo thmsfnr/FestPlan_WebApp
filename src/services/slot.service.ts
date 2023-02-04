@@ -9,9 +9,10 @@ const API_URL = url + "/slot/";
 export const createSlot = (startDate: Date, endDate: Date) => {
     return axios
         .post(API_URL, {
-            headers: authHeader(),
             startDate,
             endDate
+        }, { 
+            headers: authHeader() 
         })
         .then((response) => {
             return response.data;
@@ -40,9 +41,7 @@ export const getSlot = (idSlot?: number, startDate?: Date, endDate?: Date) => {
 
 // Update a slot
 export const updateSlot = (idSlot: number, startDate?: Date, endDate?: Date) => {
-    let elem: Record<string, any> = {
-        headers: authHeader()
-    }
+    let elem: Record<string, any> = {}
     if (startDate) {
         elem.startDate = startDate
     }
@@ -50,7 +49,9 @@ export const updateSlot = (idSlot: number, startDate?: Date, endDate?: Date) => 
         elem.endDate = endDate
     }
     return axios
-        .put(API_URL + idSlot, elem)
+        .put(API_URL + idSlot, elem, { 
+            headers: authHeader() 
+        })
         .then((response) => {
             return response.data;
         });
