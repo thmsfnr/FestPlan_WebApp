@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 
 import Management from "./Management";
 import { getAdminBoard } from "../services/test.service";
+import AffectZone from "./AffectZone";
 
 const BoardAdmin: React.FC = () => {
   let navigate: NavigateFunction = useNavigate();
@@ -18,7 +19,7 @@ const BoardAdmin: React.FC = () => {
         navigate("/login");
       }
     );
-  }, []);
+  });
 
   const back = () => {
     setState("");
@@ -29,7 +30,7 @@ const BoardAdmin: React.FC = () => {
     <div className="container">
       <header className="jumbotron">
         <h3>Admin Board</h3>
-        {state == "" ?
+        {state === "" ?
         <div>
         <Stack spacing={2} direction="row">
           <Button variant="contained" color="primary" onClick={() => {
@@ -52,12 +53,18 @@ const BoardAdmin: React.FC = () => {
           }}>
             Gestion des zones
           </Button>
+          <Button variant="contained" color="primary" onClick={() => {
+            setState("affectZone")
+          }}>
+            Affectation des zones
+          </Button>
         </Stack></div>:
         <div>
-          {state == "type" ? <Management name={"type"} parent={back} /> : <div></div>}
-          {state == "activity" ? <Management name={"activity"} parent={back} /> : <div></div>}
-          {state == "volunteer" ? <Management name={"volunteer"} parent={back} /> : <div></div>}
-          {state == "zone" ? <Management name={"zone"} parent={back} /> : <div></div>}
+          {state === "type" ? <Management name={"type"} parent={back} /> : <div></div>}
+          {state === "activity" ? <Management name={"activity"} parent={back} /> : <div></div>}
+          {state === "volunteer" ? <Management name={"volunteer"} parent={back} /> : <div></div>}
+          {state === "zone" ? <Management name={"zone"} parent={back} /> : <div></div>}
+          {state === "affectZone" ? <AffectZone parent={back}/>: <div></div>}
         </div>
         }
       </header>

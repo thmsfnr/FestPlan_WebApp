@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 type Props = {
     parent: (elem : string) => void;
     content: string[];
 }
-
 
 const List: React.FC<Props> = ({ parent, content}) => {
 

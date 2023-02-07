@@ -22,22 +22,22 @@ const [list, setList] = useState<any[]>([]);
 const [action, setAction] = useState<string>("create");
 
 const remove = (elem: number) => {
-    if (name == "type") {
+    if (name === "type") {
         deleteType(elem).then();
     }
-    else if (name == "volunteer") {
+    else if (name === "volunteer") {
         deleteVolunteer(elem).then();
     }
-    else if (name == "zone") {
+    else if (name === "zone") {
         deleteZone(elem).then();
     }
-    else if (name == "activity") {
+    else if (name === "activity") {
         deleteActivity(elem).then();
     }
 }
 
 useEffect(() => {
-    if (name == "type") {
+    if (name === "type") {
         getType().then(
             (response) => {
                 let save = [];
@@ -55,7 +55,7 @@ useEffect(() => {
             }
         );
     }
-    else if (name == "volunteer") {
+    else if (name === "volunteer") {
         getVolunteer().then(
             (response) => {
                 let save = [];
@@ -75,7 +75,7 @@ useEffect(() => {
             }
         );
     }
-    else if (name == "zone") {
+    else if (name === "zone") {
         getZone().then(
             (response) => {
                 let save = [];
@@ -93,7 +93,7 @@ useEffect(() => {
             }
         );
     }
-    else if (name == "activity") {
+    else if (name === "activity") {
         getActivity().then(
             (response) => {
                 let save = [];
@@ -112,7 +112,7 @@ useEffect(() => {
             }
         );
     }
-  }, []);
+  });
 
   return (
     <div className="container">
@@ -126,7 +126,7 @@ useEffect(() => {
                             <div>
                                 <p>{subitem}</p>
                                 <Button variant="contained" color="primary" onClick={() => {
-                                    setList(list.filter((value) => value != item))
+                                    setList(list.filter((value) => value !== item))
                                     remove(item[0])
                                 }}>
                                     Supprimer
