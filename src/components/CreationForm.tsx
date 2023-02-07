@@ -185,7 +185,8 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
             <h3>{action}</h3>
             {/* Fields of the form */}
             <div className="form-group">
-                {Object.entries(elem).map(([key, _]) => (
+              {/* if the key dont start with id */}
+                {Object.keys(elem).filter(key => !key.startsWith("id")).map(key => (
                   <>
                   <label htmlFor={key}>{key}</label>
                   <Field name={key} type="text" className="form-control" />
