@@ -27,7 +27,7 @@ type Props = {
 const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [elem, setElem] = useState<Record<string, any>>({});
+  const [elem] = useState<Record<string, any>>({});
 
   Object.entries(fields).map(([key, value]) => (
     elem[key] = value
@@ -71,7 +71,7 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
    */
   const handleCreate = () => {
     // Type
-    if (name == "type") {
+    if (name === "type") {
       createType(elem.nameType).then(
         () => {
           parent();
@@ -82,7 +82,7 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
       );
     }
     // Volunteer
-    else if (name == "volunteer") {
+    else if (name === "volunteer") {
       createVolunteer(elem.name, elem.surname, elem.email).then(
         () => {
           parent();
@@ -93,7 +93,7 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
       )
     }
     // Zone
-    else if (name == "zone") {
+    else if (name === "zone") {
       createZone(elem.nameZone).then(
         () => {
           parent();
@@ -104,7 +104,7 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
       )
     }
     // Activity
-    else if (name == "activity") {
+    else if (name === "activity") {
       createActivity(elem.nameActivity, elem.type).then(
         () => {
           parent();
@@ -122,7 +122,7 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
    */
   const handleUpdate = () => {
     // Type
-    if (name == "type") {
+    if (name === "type") {
       updateType(elem.idType, elem.nameType).then(
         () => {
           parent();
@@ -133,7 +133,7 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
       );
     }
     // Volunteer
-    else if (name == "volunteer") {
+    else if (name === "volunteer") {
       updateVolunteer(elem.idVolunteer, elem.name, elem.surname, elem.email).then(
         () => {
           parent();
@@ -144,7 +144,7 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
       )
     }
     // Zone
-    else if (name == "zone") {
+    else if (name === "zone") {
       updateZone(elem.idZone, elem.nameZone).then(
         () => {
           parent();
@@ -155,7 +155,7 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
       )
     }
     // Activity
-    else if (name == "activity") {
+    else if (name === "activity") {
       updateActivity(elem.idActivity, elem.nameActivity, elem.type).then(
         () => {
           parent();
