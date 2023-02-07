@@ -51,7 +51,7 @@ export const updateType = (idType: number, nameType?: string) => {
 }
 
 // Delete a type
-export const deleteVolunteerAssignment = (idType: number) => {
+export const deleteType = (idType: number) => {
     return axios
         .delete(API_URL + idType, {
             headers: authHeader()
