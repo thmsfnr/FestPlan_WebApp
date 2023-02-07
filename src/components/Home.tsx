@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { getPublicContent } from "../services/test.service";
+import ZoneBoard from "./ZoneBoard"
 
 const Home: React.FC = () => {
   const [content, setContent] = useState<string>("");
@@ -25,6 +26,7 @@ const Home: React.FC = () => {
     <div className="container">
       <header className="jumbotron">
         <h3>{content}</h3>
+        <ZoneBoard></ZoneBoard>
       </header>
     </div>
   );
