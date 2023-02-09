@@ -41,7 +41,18 @@ const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
     getActivityAssignment(undefined, content.idZone).then(
       (response) => {
         setList(response);
-        console.log(response);
+        activities.forEach((item) => {
+          let found = false;
+          response.forEach((item2: { idActivity: any; }) => {
+            if (item.idActivity === item2.idActivity) {
+              found = true;
+            }
+          });
+          if (!found) {
+            setActivities([...activities, item]);
+          }
+        }
+        );
       },
       (error) => {
         window.location.reload();
