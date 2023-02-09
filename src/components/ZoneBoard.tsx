@@ -24,12 +24,23 @@ const ZoneBoard: React.FC = () => {
     setDetail(elem)
 
   }
+
+  const back = () => {
+    setState(true)
+    setDetail("")
+  }
   
 
   return(
     <div className="container">
       <div>
         {state ? <List parent={parent} content={list.map((elem:any) => elem.nameZone)}/> : <div></div>}
+        {detail ? <div>
+          <button onClick={back}>Retour</button>
+          <h3>{detail}</h3>
+          <p>Informations</p>
+        </div> 
+        : <div></div>}
       </div>
     </div>
   );
