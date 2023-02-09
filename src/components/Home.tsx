@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from "react";
 import { getPublicContent } from "../services/test.service";
-import ZoneBoard from "./ZoneBoard"
+import BoardZone from "./BoardZone"
+import BoardActivity from "./BoardActivity"
+import BoardVolunteer from "./BoardVolunteer"
 
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -13,8 +15,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 const Home: React.FC = () => {
   const [content, setContent] = useState<string>("");
-  const [lister, setLister] = React.useState('');
-  const [display, setDisplay] = useState<string>("Zones");
+  const [lister, setLister] = React.useState('Zones');
 
   const handleChange = (event: SelectChangeEvent) => {
     setLister(event.target.value as string);
@@ -58,9 +59,11 @@ const Home: React.FC = () => {
             </Select>
           </FormControl>
         </Box>
-
+        <br></br>
         <div>
-          {lister === "Zones" ? <ZoneBoard></ZoneBoard> : <div></div>}
+          {lister === "Zones" ? <BoardZone></BoardZone> : <div></div>}
+          {lister === "Jeux" ? <BoardActivity></BoardActivity> : <div></div>}
+          {lister === "Bénévoles" ? <BoardVolunteer></BoardVolunteer> : <div></div>}
         </div>
       </header>
     </div>
