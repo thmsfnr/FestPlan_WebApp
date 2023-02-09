@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Button from '@mui/material/Button';
 
 import List from "./List";
 import { getZone } from "../services/zone.service"
@@ -36,7 +37,9 @@ const ZoneBoard: React.FC = () => {
       <div>
         {state ? <List parent={parent} content={list.map((elem:any) => elem.nameZone)}/> : <div></div>}
         {detail ? <div>
-          <button onClick={back}>Retour</button>
+          <Button variant="contained" color="primary" onClick={back}>
+            Retour
+          </Button>
           <h3>{detail}</h3>
           <p>Informations</p>
         </div> 
