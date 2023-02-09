@@ -1,8 +1,8 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
-import { createType, updateType } from "../services/type.service";
+import { createType, updateType, getType } from "../services/type.service";
 import { createVolunteer, updateVolunteer } from "../services/volunteer.service";
 import { createZone, updateZone } from "../services/zone.service";
 import { createActivity, updateActivity } from "../services/activity.service";
@@ -28,10 +28,24 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [elem] = useState<Record<string, any>>({});
+  const [types, setTypes] = useState<any[]>([]);
 
   Object.entries(fields).map(([key, value]) => (
     elem[key] = value
   ))
+
+  useEffect(() => {
+    if (name === "activity") {
+      getType().then(
+        (response) => {
+          setTypes(response);
+        },
+        (error) => {
+          window.location.reload();
+        }
+      );
+    }
+  }, [name]);
 
   /**
    * Manage the error of the creation or the update
@@ -187,14 +201,34 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
             <div className="form-group">
               {/* if the key dont start with id */}
                 {Object.keys(elem).filter(key => !key.startsWith("id")).map(key => (
-                  <>
+                  <div>
+                  {key === "type" ?
+                  <div>
+                    {/* Dropdown of types */}
+                    <label htmlFor={key}>{key}</label>
+                    <Field as="select" name={key} className="form-control">
+                      {types.map((type: any) => (
+                        <option value={type.idType}>{type.nameType}</option>
+                      ))}
+                    </Field>
+                    <ErrorMessage
+                      name={key}
+                      component="div"
+                      className="alert alert-danger" />
+
+                  </div>
+                  : 
+                  <div>
                   <label htmlFor={key}>{key}</label>
                   <Field name={key} type="text" className="form-control" />
                   <ErrorMessage
                     name={key}
                     component="div"
                     className="alert alert-danger" />
-                  </>
+                    </div>
+}     
+                  </div>
+
                 ))}
             </div>
             {/* Button to submit the form */}
