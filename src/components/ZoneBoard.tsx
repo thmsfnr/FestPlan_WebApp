@@ -40,6 +40,7 @@ const ZoneBoard: React.FC = () => {
           <Button variant="contained" color="primary" onClick={back}>
             Retour
           </Button>
+
           <h3>{detail}</h3>
           <p>Informations</p>
         </div> 
