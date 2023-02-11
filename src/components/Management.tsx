@@ -28,84 +28,86 @@ const Management: React.FC<Props> = ({display, name, parent}) => {
     const [action, setAction] = useState<string>("create");
     
     useEffect(() => {
-        // Type
-        if (name === "type") {
-            getType().then(
-                (response) => {
-                    let save = [];
-                    for (let i = 0; i < response.length; i++) {
-                        save.push([response[i].idType,response[i].nameType]);
+        if (action === "create") {
+            // Type
+            if (name === "type") {
+                getType().then(
+                    (response) => {
+                        let save = [];
+                        for (let i = 0; i < response.length; i++) {
+                            save.push([response[i].idType,response[i].nameType]);
+                        }
+                        setList(save);
+                        let temp: Record<string, string> = {
+                            nameType: ""
+                        };
+                        setElem(temp);
+                    },
+                    (error) => {
+                        window.location.reload();
                     }
-                    setList(save);
-                    let temp: Record<string, string> = {
-                        nameType: ""
-                    };
-                    setElem(temp);
-                },
-                (error) => {
-                    window.location.reload();
-                }
-            );
-        }
-        // Volunteer
-        else if (name === "volunteer") {
-            getVolunteer().then(
-                (response) => {
-                    let save = [];
-                    for (let i = 0; i < response.length; i++) {
-                        save.push([response[i].idVolunteer,response[i].name,response[i].surname,response[i].email]);
+                );
+            }
+            // Volunteer
+            else if (name === "volunteer") {
+                getVolunteer().then(
+                    (response) => {
+                        let save = [];
+                        for (let i = 0; i < response.length; i++) {
+                            save.push([response[i].idVolunteer,response[i].name,response[i].surname,response[i].email]);
+                        }
+                        setList(save);
+                        let temp: Record<string, string> = {
+                            name: "",
+                            surname: "",
+                            email: "",
+                        };
+                        setElem(temp);
+                    },
+                    (error) => {
+                        window.location.reload();
                     }
-                    setList(save);
-                    let temp: Record<string, string> = {
-                        name: "",
-                        surname: "",
-                        email: "",
-                    };
-                    setElem(temp);
-                },
-                (error) => {
-                    window.location.reload();
-                }
-            );
-        }
-        // Zone
-        else if (name === "zone") {
-            getZone().then(
-                (response) => {
-                    let save = [];
-                    for (let i = 0; i < response.length; i++) {
-                        save.push([response[i].idZone,response[i].nameZone]);
+                );
+            }
+            // Zone
+            else if (name === "zone") {
+                getZone().then(
+                    (response) => {
+                        let save = [];
+                        for (let i = 0; i < response.length; i++) {
+                            save.push([response[i].idZone,response[i].nameZone]);
+                        }
+                        setList(save);
+                        let temp: Record<string, string> = {
+                            nameZone: ""
+                        };
+                        setElem(temp);
+                    },
+                    (error) => {
+                        window.location.reload();
                     }
-                    setList(save);
-                    let temp: Record<string, string> = {
-                        nameZone: ""
-                    };
-                    setElem(temp);
-                },
-                (error) => {
-                    window.location.reload();
-                }
-            );
-        }
-        // Activity
-        else if (name === "activity") {
-            getActivity().then(
-                (response) => {
-                    let save = [];
-                    for (let i = 0; i < response.length; i++) {
-                        save.push([response[i].idActivity,response[i].nameActivity,response[i].type]);
+                );
+            }
+            // Activity
+            else if (name === "activity") {
+                getActivity().then(
+                    (response) => {
+                        let save = [];
+                        for (let i = 0; i < response.length; i++) {
+                            save.push([response[i].idActivity,response[i].nameActivity,response[i].type]);
+                        }
+                        setList(save);
+                        let temp: Record<string, string> = {
+                            nameActivity: "",
+                            type: ""
+                        };
+                        setElem(temp);
+                    },
+                    (error) => {
+                        window.location.reload();
                     }
-                    setList(save);
-                    let temp: Record<string, string> = {
-                        nameActivity: "",
-                        type: ""
-                    };
-                    setElem(temp);
-                },
-                (error) => {
-                    window.location.reload();
-                }
-            );
+                );
+            }
         }
     });
 

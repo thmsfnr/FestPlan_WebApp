@@ -182,80 +182,78 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
   }
 
   return (
-    <div className="col-md-12">
-      <div className="card card-container">
-        <Formik
-          initialValues={elem}
-          onSubmit={(values) => {
-            Object.entries(values).map(([key, value]) => {
-              elem[key] = value;
-            });
-            handleAction();
-          }}
-        >
-          {/* Form for the creation or the update of an element */}
-          <Form>
-            {/* Title of the form */}
-            <h3>{action}</h3>
-            {/* Fields of the form */}
-            <div className="form-group">
-              {/* if the key dont start with id */}
-                {Object.keys(elem).filter(key => !key.startsWith("id")).map(key => (
-                  <div>
-                  {key === "type" ?
-                  <div>
-                    {/* Dropdown of types */}
-                    <label htmlFor={key}>{key}</label>
-                    <Field as="select" name={key} className="form-control">
-                      {types.map((type: any) => (
-                        <option value={type.idType}>{type.nameType}</option>
-                      ))}
-                    </Field>
-                    <ErrorMessage
-                      name={key}
-                      component="div"
-                      className="alert alert-danger" />
-
-                  </div>
-                  : 
-                  <div>
+    <div style={styles.page} className="col-md-12 card card-container">
+      <Formik initialValues={elem} onSubmit={(values) => {
+        // eslint-disable-next-line
+        Object.entries(values).map(([key, value]) => {
+          elem[key] = value;
+        });
+        handleAction();
+      }}>
+        {/* Form for the creation or the update of an element */}
+        <Form>
+          {/* Title of the form */}
+          <h3>{action.charAt(0).toUpperCase() + action.slice(1)}</h3>
+          {/* Fields of the form */}
+          <section style={styles.input} className="form-group">
+            {/* if the key dont start with id */
+            Object.keys(elem).filter(key => !key.startsWith("id")).map(key => (
+              <article>{key === "type" ?
+                <div>
+                  {/* Dropdown of types */}
+                  <label htmlFor={key}>{key}</label>
+                  <Field as="select" name={key} className="form-control">
+                    {types.map((type: any) => (
+                      <option value={type.idType}>{type.nameType}</option>
+                    ))}
+                  </Field>
+                  <ErrorMessage name={key} component="div" className="alert alert-danger" />
+                </div>
+                : 
+                <div>
                   <label htmlFor={key}>{key}</label>
                   <Field name={key} type="text" className="form-control" />
-                  <ErrorMessage
-                    name={key}
-                    component="div"
-                    className="alert alert-danger" />
-                    </div>
-}     
-                  </div>
-
-                ))}
-            </div>
-            {/* Button to submit the form */}
-            <div className="form-group">
-              <button type="submit" className="btn btn-secondary btn-block" disabled={loading}>
-                {loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
-                )}
-                <span>Valider</span>
-              </button>
-            </div>
-            {/* Message to display if there is an error */}
-            {message && (
-              <div className="form-group">
-                <div className="alert alert-danger" role="alert">
-                  {message}
+                  <ErrorMessage name={key} component="div" className="alert alert-danger" />
                 </div>
-              </div>
-            )}
-          </Form>
-        </Formik>
-      </div>
+              }</article>
+            ))}
+          </section>
+          {/* Button to submit the form */}
+          <section style={styles.button} className="form-group">
+            <button type="submit" className="btn btn-secondary btn-block" disabled={loading}>
+              {loading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+              <span>Valider</span>
+            </button>
+          </section>
+          {/* Message to display if there is an error */
+          message && (
+            <section className="form-group">
+              <article className="alert alert-danger" role="alert">{message}</article>
+            </section>
+          )}
+        </Form>
+      </Formik>
     </div>
   );
 };
 
 // CSS-In-JS style attributes (to have a completely autonomous component)
-const styles = {}
+const styles = {
+  page: {
+    "margin-top": "10px",
+    "display": "flex",
+    "justify-content": "center",
+    "align-items": "center",
+    "text-align": "center",
+  },
+  input: {
+    "marginTop": "20px",
+  },
+  button: {
+    "marginTop": "30px",
+  }
+}
 
 export default CreationForm;
