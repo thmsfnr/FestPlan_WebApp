@@ -1,5 +1,6 @@
 
-import React from "react";
+import React from 'react'
+import Tile from './Tile';
 
 /**
  * Props of the component
@@ -19,9 +20,7 @@ const List: React.FC<Props> = ({ parent, content}) => {
         <div className="container">
             <section style={styles.list}>
                 {content.map((item: string) => (
-                    <div style={styles.tile} key={item} onClick={() => parent(item)}>
-                        <h5>{item}</h5>
-                    </div>
+                    <Tile parent={() => parent(item)} name={item} />
                 ))}
             </section>
         </div>
@@ -32,14 +31,9 @@ const List: React.FC<Props> = ({ parent, content}) => {
 const styles = {
     list: {
         "display": "flex",
-        "flex-wrap": "wrap",
-        "alignItems": "center",
-    },
-    tile: {
-        "backgroundColor": "#e1e1ea",
-        "padding": "30px",
+        "flex-direction": "column",
+        "justifyContent": "center",
         "margin": "30px",
-        "borderRadius": "10px",
     }
 }
 
