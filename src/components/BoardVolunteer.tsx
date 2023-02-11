@@ -23,6 +23,7 @@ const BoardVolunteer: React.FC = () => {
   const parent=(elem : string) => {
     setState(false)
     setDetail(elem)
+    console.log(elem)
 
   }
 
@@ -35,7 +36,7 @@ const BoardVolunteer: React.FC = () => {
   return(
     <div className="container">
       <div>
-        {state ? <List parent={parent} content={list.map((elem:any) => elem.nameVolunteer)}/> : <div></div>}
+        {state ? <List parent={parent} content={list.map((elem:any) => elem.name)}/> : <div></div>}
         {detail ? <div>
           <Button variant="contained" color="primary" onClick={back}>
             Retour
@@ -44,7 +45,7 @@ const BoardVolunteer: React.FC = () => {
           <br></br>
           <h3>{detail}</h3>
           <br></br>
-          <p>Informations</p>
+          <p>{list.map((elem:any) =>  elem.name + "\n" + elem.surname +"\n" + elem.email)}</p>
         </div> 
         : <div></div>}
       </div>
