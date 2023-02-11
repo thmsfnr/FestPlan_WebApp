@@ -242,10 +242,10 @@ const CreationForm: React.FC<Props> = ({ parent, name, fields, action }) => {
 // CSS-In-JS style attributes (to have a completely autonomous component)
 const styles = {
   page: {
-    "margin-top": "10px",
+    "marginTop": "10px",
     "display": "flex",
-    "justify-content": "center",
-    "align-items": "center",
+    "justifyContent": "center",
+    "alignItems": "center",
     "text-align": "center",
   },
   input: {
