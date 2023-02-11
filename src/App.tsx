@@ -65,7 +65,7 @@ const App: React.FC = () => {
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link to={"/admin"} className="nav-link">
-                {currentUser.username}
+                Admin
               </Link>
             </li>
             <li className="nav-item">
