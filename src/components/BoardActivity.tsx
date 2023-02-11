@@ -1,21 +1,40 @@
 import React, { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
 
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import List from "./List";
 import { getActivity } from "../services/activity.service"
-import { valueToPercent } from "@mui/base";
+import { getType } from "../services/type.service";
+
+
 
 const BoardActivity: React.FC = () => {
   const [state, setState] = useState<boolean>(true);
   const [list, setList] = useState<any[]>([]);
+  const [type, setType] = useState<any[]>([]);
+  const [saveList, setSaveList] = useState<any[]>([]);
+ 
   const [detail,setDetail] = useState<string>("")
   const [seachTerm, setSearchTerm] = useState<string>("")
+  const [tagType, setTagType] = useState('0');
 
 
   useEffect(() => {
     getActivity().then(
-      (response) => {setList(response)},
+      (response) => {setList(response)
+      setSaveList(response)},
+      (error) => {
+        window.location.reload()
+
+      }
+    );
+    getType().then(
+      (response) => {setType(response)},
       (error) => {
         window.location.reload()
 
@@ -34,14 +53,36 @@ const BoardActivity: React.FC = () => {
     setState(true)
     setDetail("")
     setSearchTerm("")
+    setTagType("")
   }
   
-  const handleSearch = (event: any) => {
-    let value = event.target.value
+  const handleSearch = (event: string) => {
+    let value = event
     setSearchTerm(value)
+    let result = saveList.filter((elem:any) => elem.nameActivity.toLowerCase().includes(value.toLowerCase()))
+    if (tagType !== "0"){
+      result = result.filter((elem:any) => elem.type === tagType)
+    }
+    setList(result)
+
   }
 
-  console.log(seachTerm)
+  const filterType = (type: string) => {
+    let value = type
+    setTagType(value)
+    let result = saveList
+    if (value === "0") {
+      setList(saveList)
+    }
+    else{
+      result = saveList.filter((elem:any) => elem.type === value)
+    }
+    result = result.filter((elem:any) => elem.nameActivity.toLowerCase().includes(seachTerm.toLowerCase()))
+    setList(result)
+  }
+
+
+
 
   return(
     <div className="container">
@@ -49,17 +90,31 @@ const BoardActivity: React.FC = () => {
           <div className="searchBar">
             <input type="text" 
             placeholder="Rechercher"
-            onChange={handleSearch}
+            onChange={(event) => handleSearch(event.target.value)}
+            />
+
+          <Box sx={{ maxWidth: 150 }}>
+            <FormControl fullWidth>
+              <InputLabel>Type d'activité</InputLabel>
+              <Select
+                value={tagType}
+                label="Type"
+                onChange={(event) => filterType(event.target.value)}
+
+                >
+                <MenuItem value={"0"}>Tous</MenuItem>
+                {type.map((elem:any) => <MenuItem value={elem.idType}>{elem.nameType}</MenuItem>)}
+
+              </Select>
+            </FormControl>
+          </Box>
+          
+          <List parent={parent} content={list.map((elem:any) => elem.nameActivity)}/>
             
-            />
-            <List parent={parent} content={list.map((elem:any) => elem.nameActivity).filter((val:any) => {
-                if(seachTerm == ""){
-                  return val
-                }else if(val.toLowerCase().includes(seachTerm.toLowerCase())){
-                  return val
-                }
-              })}
-            />
+                    
+            
+            
+
 
             </div>
         : <div></div>

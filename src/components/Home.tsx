@@ -17,13 +17,11 @@ const Home: React.FC = () => {
   const [content, setContent] = useState<string>("");
   const [lister, setLister] = React.useState('Zones');
 
+
+
   const handleChange = (event: SelectChangeEvent) => {
     setLister(event.target.value as string);
   };
-
-
-
-
 
   useEffect(() => {
     getPublicContent().then(
@@ -41,6 +39,8 @@ const Home: React.FC = () => {
     );
   }, []);
 
+
+  
   return (
     <div className="container">
       <header className="jumbotron">
