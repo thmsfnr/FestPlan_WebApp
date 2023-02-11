@@ -220,16 +220,16 @@ const Management: React.FC<Props> = ({display, name, parent}) => {
 const styles = {
     header: {
         "margin": "30px",
-        "margin-bottom": "30px",
+        "marginBottom": "30px",
         "text-align": "center"
     },
     page: {
         "backgroundColor": "#E6E6E6",
-        "border-radius": "30px",
+        "borderRadius": "30px",
     },
     title: {
         "padding": "30px",
-        "padding-bottom": "0px",
+        "paddingBottom": "0px",
         "text-align": "center"
     },
     main: {
@@ -241,17 +241,17 @@ const styles = {
         "margin": "30px",
         "display": "flex",
         'flex-wrap': 'wrap',
-        "justify-content": "center",
+        "justifyContent": "center",
     },
     form: {
         "margin": "30px",
         "marginTop": "0px",
         "display": "flex",
-        "justify-content": "center",
+        "justifyContent": "center",
     },
     element: {
         "backgroundColor": "#FFFFFF",
-        "border-radius": "10px",
+        "borderRadius": "10px",
         "margin": "10px",
         "padding": "10px",
         "text-align": "center"

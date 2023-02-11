@@ -3,66 +3,61 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
 
+import "./assets/App.css";
 import * as AuthService from "./services/auth.service";
 import IUser from './types/user.type';
-
 import Login from "./components/Login";
 import Home from "./components/Home";
 import BoardAdmin from "./components/BoardAdmin";
-
 import EventBus from "./common/EventBus";
 
+/**
+ * Component for the app
+ */
 const App: React.FC = () => {
-  const [showAdminBoard, setShowAdminBoard] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
-
     if (user) {
       setCurrentUser(user);
     }
-
     EventBus.on("logout", logOut);
-
     return () => {
       EventBus.remove("logout", logOut);
     };
   }, []);
 
+  /**
+   * Manage the logout of the user
+   */
   const logOut = () => {
     AuthService.logout();
-    setShowAdminBoard(false);
     setCurrentUser(undefined);
   };
 
   return (
     <div>
+      {/* Navigation bar */}
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={"/"} className="navbar-brand">
-          FestPlan
-        </Link>
-        <div className="navbar-nav mr-auto">
+        {/* Application name */}
+        <section style={styles.name}>
+          <Link to={"/"} className="navbar-brand">
+            FestPlan
+          </Link>
+        </section>
+        {/* Home */}
+        <section className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link to={"/home"} className="nav-link">
               Home
             </Link>
           </li>
-
-          {showAdminBoard && (
-            <li className="nav-item">
-              <Link to={"/admin"} className="nav-link">
-                Admin Board
-              </Link>
-            </li>
-          )}
-
-        </div>
-
+        </section>
         {currentUser ? (
-          <div className="navbar-nav ml-auto">
+          // Connected section
+          <section className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link to={"/admin"} className="nav-link">
                 Admin
@@ -73,18 +68,19 @@ const App: React.FC = () => {
                 LogOut
               </a>
             </li>
-          </div>
-        ) : (
-          <div className="navbar-nav ml-auto">
+          </section>
+          ) : (
+          // Not connected section
+          <section className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link to={"/login"} className="nav-link">
                 Login
               </Link>
             </li>
-          </div>
+          </section>
         )}
       </nav>
-
+      {/* Routes */}
       <div className="container mt-3">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -96,5 +92,12 @@ const App: React.FC = () => {
     </div>
   );
 };
+
+// CSS-In-JS style attributes (to have a completely autonomous component)
+const styles = {
+  name: {
+    "marginLeft": "20px",
+  }
+}
 
 export default App;

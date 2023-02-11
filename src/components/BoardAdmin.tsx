@@ -71,12 +71,12 @@ const BoardAdmin: React.FC = () => {
 const styles = {
   button: {
     "padding": "20px",
-    "padding-top": "20px",
+    "paddingTop": "20px",
     "width": "300px",
   },
   header: {
     "display": "flex",
-    "justify-content": "center",
+    "justifyContent": "center",
     "margin": "30px",
   },
   container: {
@@ -86,14 +86,14 @@ const styles = {
     "padding": "10px",
     "paddingBottom": "40px",
     "width": "500px",
-    [`@media (max-width: 768px)`]: {
+    [`@media (maxWidth: 768px)`]: {
       "width": "380px",
     },
     "borderRadius": "30px",
   },
   page: {
     "display": "flex",
-    "justify-content": "center",
+    "justifyContent": "center",
   }
 }
 
