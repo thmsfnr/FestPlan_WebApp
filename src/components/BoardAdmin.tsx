@@ -55,10 +55,10 @@ const BoardAdmin: React.FC = () => {
         :
         /* Action selected */
         <section>
-          {state === "type" ? <Management name={"type"} parent={back}/> : <div></div>}
-          {state === "activity" ? <Management name={"activity"} parent={back}/> : <div></div>}
-          {state === "volunteer" ? <Management name={"volunteer"} parent={back}/> : <div></div>}
-          {state === "zone" ? <Management name={"zone"} parent={back}/> : <div></div>}
+          {state === "type" ? <Management display={"types"} name={"type"} parent={back}/> : <div></div>}
+          {state === "activity" ? <Management display={"jeux"} name={"activity"} parent={back}/> : <div></div>}
+          {state === "volunteer" ? <Management display={"bénévoles"} name={"volunteer"} parent={back}/> : <div></div>}
+          {state === "zone" ? <Management display={"zones"} name={"zone"} parent={back}/> : <div></div>}
           {state === "affectZone" ? <AffectZone parent={back}/>: <div></div>}
           {state === "affectSlot" ? <div></div>: <div></div> /* To complete with the corresponding action */}
         </section>
@@ -85,7 +85,10 @@ const styles = {
     "marginBottom": "50px",
     "padding": "10px",
     "paddingBottom": "40px",
-    "width": "380px",
+    "width": "500px",
+    [`@media (max-width: 768px)`]: {
+      "width": "380px",
+    },
     "borderRadius": "30px",
   },
   page: {
