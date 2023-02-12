@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Management from "./Management";
 import { getAdminBoard } from "../services/test.service";
 import AffectZone from "./AffectZone";
+import AffectVolunteer from "./AffectVolunteer";
 
 /**
  * Component for the admin board
@@ -60,7 +61,7 @@ const BoardAdmin: React.FC = () => {
           {state === "volunteer" ? <Management display={"bénévoles"} name={"volunteer"} parent={back}/> : <div></div>}
           {state === "zone" ? <Management display={"zones"} name={"zone"} parent={back}/> : <div></div>}
           {state === "affectZone" ? <AffectZone parent={back}/>: <div></div>}
-          {state === "affectSlot" ? <div></div>: <div></div> /* To complete with the corresponding action */}
+          {state === "affectSlot" ? <AffectVolunteer parent={back}/>: <div></div>/* To complete with the corresponding action */}
         </section>
       }
     </div>

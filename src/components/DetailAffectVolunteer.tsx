@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
 
-import { getActivityAssignment, createActivityAssignment, deleteActivityAssignment } from "../services/activity_assignment.service";
-import { getActivity } from "../services/activity.service";
+import { getVolunteerAssignment, createVolunteerAssignment, deleteVolunteerAssignment } from "../services/volunteer_assignment.service";
+import { getVolunteer } from "../services/volunteer.service";
+import { getSlot, createSlot, deleteSlot } from "../services/slot.service";
+
 
 /**
  * Props of the component
@@ -14,29 +16,29 @@ type Props = {
 }
 
 /**
- * Component to display the details of a zone and to affect an activity to it
+ * Component to display the details of a zone and to affect a volunteer to it
  * @param parent A function to return to the parent component
  * @param content The content of the zone
  */
-const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
+const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
   const [list, setList] = useState<any[]>([]);
-  const [activities, setActivities] = useState<any[]>([]);
+  const [volunteers, setVolunteers] = useState<any[]>([]);
   const [selected, setSelected] = useState<number>();
 
   useEffect(() => {
-    // Activities assigned to the zone
-    getActivityAssignment(undefined, content.idZone).then(
+    // Volunteers assigned to the zone
+    getVolunteerAssignment(undefined, content.idZone).then(
       (response) => {
         setList(response);
-        activities.forEach((item) => {
+        volunteers.forEach((item) => {
           let found = false;
-          response.forEach((item2: { idActivity: any; }) => {
-            if (item.idActivity === item2.idActivity) {
+          response.forEach((item2: { idVolunteer: any; }) => {
+            if (item.idVolunteer === item2.idVolunteer) {
               found = true;
             }
           });
           if (!found) {
-            setActivities([...activities, item]);
+            setVolunteers([...volunteers, item]);
           }
         }
         );
@@ -45,11 +47,11 @@ const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
         window.location.reload();
       }
     );
-    // All activities
-    getActivity().then(
+    // All volunteers
+    getVolunteer().then(
       (response) => {
-        setActivities(response);
-        setSelected(response[0].idActivity);
+        setVolunteers(response);
+        setSelected(response[0].idVolunteer);
       },
       (error) => {
         window.location.reload();
@@ -59,11 +61,12 @@ const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
 
   /**
    * Manage the click on the create button
-   * @param idActivity Id of the activity to assign
+   * @param idVolunteer Id of the volunteer to assign
    * @param idZone Id of the zone to assign
+   * @param idSlot Id of the slot to assign
    */
-  const createAssignment = (idActivity: number, idZone: number) => {
-    createActivityAssignment(idActivity, idZone).then(
+  const createAssignment = (idVolunteer: number, idSlot: number, idZone: number, ) => {
+    createVolunteerAssignment(idVolunteer, idSlot, idZone).then(
       (response) => {
         window.location.reload();
       },
@@ -74,12 +77,12 @@ const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
   }
 
   /**
-   * Manage the click on the delete button
-   * @param idActivity Id of the activity to delete
+   * Manage the click on the delete button 
+   * @param idVolunteer Id of the volunteer to delete
    * @param idZone Id of the zone to delete
    */
-  const removeAssignment = (idActivity: number, idZone: number) => {
-    deleteActivityAssignment(idActivity, idZone).then(
+  const removeAssignment = (idVolunteer: number, slot: number) => {
+    deleteVolunteerAssignment(idVolunteer, slot).then(
       (response) => {
         window.location.reload();
       },
@@ -89,6 +92,25 @@ const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
     );
   }
 
+  /**
+   * Create a slot
+   * @param startDate Start date of the slot
+   * @param endDate End date of the slot
+   */
+  const creationSlotThenAssigment = (selected: number, startDate: Date, endDate: Date) => {
+    createSlot(startDate, endDate).then(
+      (response) => {
+        console.log("Slot created");
+        createAssignment(selected, response.idSlot, content.idZone);
+      },
+      (error) => {
+        window.location.reload();
+      }
+    );
+  }
+
+
+
   return(
     <div className="container">
       {/* Back button */}
@@ -97,26 +119,29 @@ const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
       </section>
       {/* Management */}
       <section style={styles.page}>
-        {/* Assign a new activity to the zone */}
+        {/* Assign a new volunteer to the zone */}
         <article style={styles.assign}>
           <select style={styles.select} value={selected} onChange={e => {setSelected(parseInt(e.target.value))}}>
-            {activities.map((item) => (
-              <option value={item.idActivity}>{item.nameActivity}</option>
+            {volunteers.map((item) => (
+              <option value={item.idVolunteer}>{item.name + " "+ item.surname}</option>
             ))}
           </select>
+          <p>Debut : {content.startDate}</p>
+          <p>Fin : {content.endDate}</p>
           <Button style={styles.button} variant="contained" color="primary" onClick={() => {
             if (selected !== undefined) {
-              createAssignment(selected, content.idZone);
+              creationSlotThenAssigment(selected, content.startDate, content.endDate);
+              {/* TODO: Faire le form pour récup les dates et l'heure aussi? */}
             }
           }}>Ajouter</Button>
         </article>
-        {/* List of activities assigned to the zone */}
+        {/* List of volunteers assigned to the zone */}
         <article>
           {list.map((item) => (
             <div style={styles.tile}>
-              <p>{item.Activity.nameActivity}</p>
+              <p>{item.Volunteer.name + " " + item.surname}</p>
               <Button variant="contained" color="error" onClick={() => {
-                removeAssignment(item.ActivityIdActivity, content.idZone)
+                removeAssignment(item.VolunteerIdVolunteer, content.idZone)
               }}>🗑️</Button>
             </div>
           ))}
@@ -174,4 +199,4 @@ const styles = {
   }  
 }
 
-export default DetailAffectZone;
+export default DetailAffectVolunteer;
