@@ -1,6 +1,8 @@
 
 import React, { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
+import '@mobiscroll/react/dist/css/mobiscroll.min.css';
+import { Eventcalendar, getJson, toast, localeFr } from '@mobiscroll/react';
 
 import { getVolunteerAssignment, createVolunteerAssignment, deleteVolunteerAssignment } from "../services/volunteer_assignment.service";
 import { getVolunteer } from "../services/volunteer.service";
@@ -24,6 +26,7 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
   const [list, setList] = useState<any[]>([]);
   const [volunteers, setVolunteers] = useState<any[]>([]);
   const [selected, setSelected] = useState<number>();
+  const [myEvents, setEvents] = React.useState<any[]>([]);
 
   useEffect(() => {
     // Volunteers assigned to the zone
@@ -57,7 +60,22 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
         window.location.reload();
       }
     );
+    getJson('https://trial.mobiscroll.com/events/?vers=5', (events) => {
+            setEvents(events);
+        }, 'jsonp');
   }, []);
+
+  const onEventClick = React.useCallback((event: any) => {
+    toast({
+        message: event.event.title
+    });
+}, []);
+
+const view = React.useMemo(() => {
+  return {
+      schedule: { type: 'week' } as any
+  };
+}, []);
 
   /**
    * Manage the click on the create button
@@ -147,6 +165,19 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
           ))}
         </article>
       </section>
+      <Eventcalendar
+            theme="ios" 
+            themeVariant="light"
+            clickToCreate={true}
+            dragToCreate={true}
+            dragToMove={true}
+            dragToResize={true}
+            eventDelete={true}
+            locale={localeFr}
+            data={myEvents}
+            view={view}
+            onEventClick={onEventClick}
+       />
     </div>
   );
 }
