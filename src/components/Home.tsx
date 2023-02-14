@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 
 import BoardZone from "./BoardZone"
 import BoardActivity from "./BoardActivity"
-import BoardVolunteer from "./BoardVolunteer"
+import BoardSlot from "./BoardSlot"
 
 const Home: React.FC = () => {
   const [state, setState] = useState<string>("");
@@ -26,14 +26,14 @@ const Home: React.FC = () => {
         <section style={styles.container}>
           {/* Title of the section */}
           <header style={styles.header} className="jumbotron">
-            <h4>Home Menu</h4>
+            <img style={styles.img} src="logo.png" alt="Logo Festplan"></img>
           </header>
           {/* List of buttons */}
           <article>
             <Stack spacing={5} direction="column" justifyContent="center" alignItems="center">
               <Button style={styles.button} variant="contained" color="primary" onClick={() => { setState("zone") }}>Consultation des zones</Button>
               <Button style={styles.button} variant="contained" size="large" color="primary" onClick={() => { setState("activity") }}>Consultation des jeux</Button>
-              <Button style={styles.button} variant="contained" color="primary" onClick={() => { setState("volunteer") }}>Consultation des bénévoles</Button>
+              <Button style={styles.button} variant="contained" color="primary" onClick={() => { setState("slot") }}>Consultation des créneaux</Button>
             </Stack>
           </article>
         </section>
@@ -42,7 +42,7 @@ const Home: React.FC = () => {
         <section>
           {state === "zone" ? <BoardZone backMenu={back}></BoardZone> : <div></div>}
           {state === "activity" ? <BoardActivity backMenu={back}></BoardActivity>  : <div></div>}
-          {state === "volunteer" ? <BoardVolunteer backMenu={back}></BoardVolunteer> : <div></div>}
+          {state === "slot" ? <BoardSlot backMenu={back}></BoardSlot> : <div></div>}
         </section>
       }
     </div>
@@ -59,7 +59,6 @@ const styles = {
   header: {
     "display": "flex",
     "justifyContent": "center",
-    "margin": "30px",
   },
   container: {
     "backgroundColor": "#E6E6E6",
@@ -76,6 +75,10 @@ const styles = {
   page: {
     "display": "flex",
     "justifyContent": "center",
+  },
+  img: {
+    "width": "100%",
+    "height": "100%",
   }
 }
 

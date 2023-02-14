@@ -65,7 +65,7 @@ const App: React.FC = () => {
             </li>
             <li className="nav-item">
               <a href="/login" className="nav-link" onClick={logOut}>
-                LogOut
+                Déconnexion
               </a>
             </li>
           </section>
@@ -74,7 +74,7 @@ const App: React.FC = () => {
           <section className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link to={"/login"} className="nav-link">
-                Login
+                Connexion
               </Link>
             </li>
           </section>
