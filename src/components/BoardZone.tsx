@@ -4,7 +4,14 @@ import Button from '@mui/material/Button';
 import List from "./List";
 import { getZone } from "../services/zone.service"
 
-const BoardZone: React.FC = () => {
+ /**
+     * Props of the component
+     */ 
+ type Props = {
+  backMenu: () => void
+}
+
+const BoardZone: React.FC<Props> = ({ backMenu }) => {
   const [state, setState] = useState<boolean>(true);
   const [list, setList] = useState<any[]>([]);
   const [detail,setDetail] = useState<string>("")
@@ -34,6 +41,10 @@ const BoardZone: React.FC = () => {
 
   return(
     <div className="container">
+      {/* Back button */}
+      <header style={styles.header} className="jumbotron">
+        <Button variant="outlined" color="primary" onClick={backMenu}>Retour</Button>
+      </header>
       <div>
         {state ? <List parent={parent} content={list.map((elem:any) => elem.nameZone)}/> : <div></div>}
         {detail ? <div>
@@ -50,6 +61,15 @@ const BoardZone: React.FC = () => {
       </div>
     </div>
   );
+}
+
+// CSS-In-JS style attributes (to have a completely autonomous component)
+const styles = {
+  header: {
+    "display": "flex",
+    "justifyContent": "center",
+    "margin": "30px",
+  },
 }
 
 export default BoardZone;

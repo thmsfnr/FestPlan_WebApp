@@ -11,9 +11,14 @@ import List from "./List";
 import { getActivity } from "../services/activity.service"
 import { getType } from "../services/type.service";
 
+ /**
+     * Props of the component
+     */ 
+ type Props = {
+  backMenu: () => void
+}
 
-
-const BoardActivity: React.FC = () => {
+const BoardActivity: React.FC<Props> = ({backMenu}) => {
 const [state, setState] = useState<boolean>(true);
 const [list, setList] = useState<any[]>([]);
 const [type, setType] = useState<any[]>([]);
@@ -86,6 +91,10 @@ const filterType = (type: string) => {
 
 return(
   <div className="container">
+    {/* Back button */}
+    <header style={styles.header} className="jumbotron">
+        <Button variant="outlined" color="primary" onClick={backMenu}>Retour</Button>
+      </header>
     { state ? 
         <div className="searchBar">
           <input type="text" 
@@ -128,6 +137,15 @@ return(
       
   </div>
 );
+}
+
+// CSS-In-JS style attributes (to have a completely autonomous component)
+const styles = {
+  header: {
+    "display": "flex",
+    "justifyContent": "center",
+    "margin": "30px",
+  },
 }
 
 export default BoardActivity;

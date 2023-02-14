@@ -1,73 +1,85 @@
 
-import React, { useState, useEffect } from "react";
-import { getPublicContent } from "../services/test.service";
+import React, { useState } from "react";
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+
 import BoardZone from "./BoardZone"
 import BoardActivity from "./BoardActivity"
-import BoardVolunteer from "./BoardVolunteer"
-
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-
-
+import BoardSlot from "./BoardSlot"
 
 const Home: React.FC = () => {
-  const [content, setContent] = useState<string>("");
-  const [lister, setLister] = React.useState('Zones');
+  const [state, setState] = useState<string>("");
 
-
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setLister(event.target.value as string);
-  };
-
-  useEffect(() => {
-    getPublicContent().then(
-      (response) => {
-        setContent(response.data);
-      },
-      (error) => {
-        const _content =
-          (error.response && error.response.data) ||
-          error.message ||
-          error.toString();
-
-        setContent(_content);
-      }
-    );
-  }, []);
+  /**
+   * Go back to the base page of the admin board
+   */
+  const back = () => {
+    setState("");
+  }
 
 
   
   return (
-    <div className="container">
-      <header className="jumbotron">
-        <h3>{content}</h3>
-        <Box sx={{ maxWidth: 150 }}>
-          <FormControl fullWidth>
-            <InputLabel>Lister</InputLabel>
-            <Select
-              value={lister}
-              label="Lister"
-              onChange={handleChange}
-              >
-              <MenuItem value={"Zones"}>Zones</MenuItem>
-              <MenuItem value={"Jeux"}>Jeux</MenuItem>
-              <MenuItem value={"Bénévoles"}>Bénévoles</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <br></br>
-        <div>
-          {lister === "Zones" ? <BoardZone></BoardZone> : <div></div>}
-          {lister === "Jeux" ? <BoardActivity></BoardActivity> : <div></div>}
-          {lister === "Bénévoles" ? <BoardVolunteer></BoardVolunteer> : <div></div>}
-        </div>
-      </header>
+    <div style={styles.page} className="container">
+      {state === "" ?
+        /* Selection Menu */
+        <section style={styles.container}>
+          {/* Title of the section */}
+          <header style={styles.header} className="jumbotron">
+            <img style={styles.img} src="logo.png" alt="Logo Festplan"></img>
+          </header>
+          {/* List of buttons */}
+          <article>
+            <Stack spacing={5} direction="column" justifyContent="center" alignItems="center">
+              <Button style={styles.button} variant="contained" color="primary" onClick={() => { setState("zone") }}>Consultation des zones</Button>
+              <Button style={styles.button} variant="contained" size="large" color="primary" onClick={() => { setState("activity") }}>Consultation des jeux</Button>
+              <Button style={styles.button} variant="contained" color="primary" onClick={() => { setState("slot") }}>Consultation des créneaux</Button>
+            </Stack>
+          </article>
+        </section>
+        :
+        /* Action selected */
+        <section>
+          {state === "zone" ? <BoardZone backMenu={back}></BoardZone> : <div></div>}
+          {state === "activity" ? <BoardActivity backMenu={back}></BoardActivity>  : <div></div>}
+          {state === "slot" ? <BoardSlot backMenu={back}></BoardSlot> : <div></div>}
+        </section>
+      }
     </div>
   );
 };
+
+// CSS-In-JS style attributes (to have a completely autonomous component)
+const styles = {
+  button: {
+    "padding": "20px",
+    "paddingTop": "20px",
+    "width": "300px",
+  },
+  header: {
+    "display": "flex",
+    "justifyContent": "center",
+  },
+  container: {
+    "backgroundColor": "#E6E6E6",
+    "marginTop": "50px",
+    "marginBottom": "50px",
+    "padding": "10px",
+    "paddingBottom": "40px",
+    "width": "500px",
+    [`@media (maxWidth: 768px)`]: {
+      "width": "380px",
+    },
+    "borderRadius": "30px",
+  },
+  page: {
+    "display": "flex",
+    "justifyContent": "center",
+  },
+  img: {
+    "width": "100%",
+    "height": "100%",
+  }
+}
 
 export default Home;
