@@ -76,7 +76,9 @@
                 <Button variant="outlined" color="primary" onClick={parent}>Retour</Button>
               </div> 
               <List parent={change} content={assignedZones.sort((a:any, b:any) => a.Zone.nameZone.localeCompare(b.Zone.nameZone))
-                .map((item:any) => item.Zone.nameZone +" : "+ item.Activity.nameActivity)} />
+              /*Zone appear only once */
+                .filter((item:any, index:any, self:any) => self.findIndex((t:any) => t.Zone.nameZone === item.Zone.nameZone) === index)
+                .map((item:any) => item.Zone.nameZone)} />
             </article> 
             : 
             /* Display the detail of the zone */

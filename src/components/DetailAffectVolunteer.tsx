@@ -30,9 +30,9 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
 
   useEffect(() => {
     // Volunteers assigned to the zone
-    getVolunteerAssignment(undefined, content.idZone).then(
+    getVolunteerAssignment(undefined, content.idSlot, content.idZone).then(
       (response) => {
-        setList(response);
+        convertData(response);
         volunteers.forEach((item) => {
           let found = false;
           response.forEach((item2: { idVolunteer: any; }) => {
@@ -60,9 +60,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
         window.location.reload();
       }
     );
-    getJson('https://trial.mobiscroll.com/events/?vers=5', (events) => {
-            setEvents(events);
-        }, 'jsonp');
   }, []);
 
   const onEventClick = React.useCallback((event: any) => {
@@ -113,6 +110,7 @@ const view = React.useMemo(() => {
   /**
    * Create a slot
    * @param startDate Start date of the slot
+   * @param startDate Start date of the slot
    * @param endDate End date of the slot
    */
   const creationSlotThenAssigment = (selected: number, startDate: Date, endDate: Date) => {
@@ -127,7 +125,24 @@ const view = React.useMemo(() => {
     );
   }
 
+  const echoes = (event: any) => {
+    console.log(list);
+    convertData(list);
+  }
 
+  const convertData = (data : any) => {
+    let events: any[] = [];
+    for (let i = 0; i < data.length; i++) {
+      const element = data[i];
+      events.push({
+        title: element.Volunteer.name + " " + element.Volunteer.surname,
+        start: element.Slot.startDate,
+        end: element.Slot.endDate,
+        color: '#ff6d42'
+      });
+    }
+    setEvents(events);
+  }
 
   return(
     <div className="container">
@@ -166,17 +181,18 @@ const view = React.useMemo(() => {
         </article>
       </section>
       <Eventcalendar
-            theme="ios" 
-            themeVariant="light"
-            clickToCreate={true}
-            dragToCreate={true}
-            dragToMove={true}
-            dragToResize={true}
-            eventDelete={true}
-            locale={localeFr}
-            data={myEvents}
-            view={view}
-            onEventClick={onEventClick}
+        theme="ios" 
+        themeVariant="light"
+        clickToCreate={true}
+        dragToCreate={true}
+        dragToMove={true}
+        dragToResize={true}
+        eventDelete={true}
+        locale={localeFr}
+        data={myEvents}
+        view={view}
+        onEventClick={onEventClick}
+        onEventCreated={echoes}
        />
     </div>
   );
