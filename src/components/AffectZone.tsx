@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 import List from "./List";
 import DetailAffectZone from "./DetailAffectZone";
@@ -21,16 +23,21 @@ const AffectZone: React.FC<Props> = ({ parent }) => {
   const [state, setState] = useState<boolean>(true);
   const [list, setList] = useState<any[]>([]);
   const [detail,setDetail] = useState<string>("")
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getZone().then(
-      (response) => {
-        setList(response)
-      },
-      (error) => {
-        window.location.reload()
-      }
-    );
+    const fetchData = async () => {
+      await getZone().then(
+        (response) => {
+          setList(response)
+        },
+        (error) => {
+          window.location.reload()
+        }
+      );
+      setIsLoading(false);
+    }
+    fetchData();
   }, []);
 
   /**
@@ -59,7 +66,13 @@ const AffectZone: React.FC<Props> = ({ parent }) => {
             <div style={styles.back} className="jumbotron">
               <Button variant="outlined" color="primary" onClick={parent}>Retour</Button>
             </div>
-            <List parent={change} content={list.map((elem:any) => elem.nameZone)}/>
+            { isLoading ? 
+              <Box sx={{ display: 'flex', justifyContent: 'center', margin: '30px' }}>
+                <CircularProgress />
+              </Box>
+              :
+              <List parent={change} content={list.map((elem:any) => elem.nameZone)}/>
+            }
           </article> 
           : 
           /* Display the detail of the zone */
