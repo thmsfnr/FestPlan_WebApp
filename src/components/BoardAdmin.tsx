@@ -61,7 +61,7 @@ const BoardAdmin: React.FC = () => {
           {state === "volunteer" ? <Management display={"bénévoles"} name={"volunteer"} parent={back}/> : <div></div>}
           {state === "zone" ? <Management display={"zones"} name={"zone"} parent={back}/> : <div></div>}
           {state === "affectZone" ? <AffectZone parent={back}/>: <div></div>}
-          {state === "affectSlot" ? <AffectVolunteer parent={back}/>: <div></div>/* To complete with the corresponding action */}
+          {state === "affectSlot" ? <AffectVolunteer parent={back}/>: <div></div>}
         </section>
       }
     </div>

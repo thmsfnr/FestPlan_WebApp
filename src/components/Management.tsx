@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 import CreationForm from "./CreationForm";
 import { getType, deleteType } from "../services/type.service";
@@ -26,89 +28,94 @@ const Management: React.FC<Props> = ({display, name, parent}) => {
     const [elem, setElem] = useState<Record<string, string>>({});
     const [list, setList] = useState<any[]>([]);
     const [action, setAction] = useState<string>("create");
+    const [isLoading, setIsLoading] = useState(true);
     
     useEffect(() => {
-        if (action === "create") {
-            // Type
-            if (name === "type") {
-                getType().then(
-                    (response) => {
-                        let save = [];
-                        for (let i = 0; i < response.length; i++) {
-                            save.push([response[i].idType,response[i].nameType]);
+        const fetchData = async () => {
+            if (action === "create") {
+                // Type
+                if (name === "type") {
+                    await getType().then(
+                        (response) => {
+                            let save = [];
+                            for (let i = 0; i < response.length; i++) {
+                                save.push([response[i].idType,response[i].nameType]);
+                            }
+                            setList(save);
+                            let temp: Record<string, string> = {
+                                nameType: ""
+                            };
+                            setElem(temp);
+                        },
+                        (error) => {
+                            window.location.reload();
                         }
-                        setList(save);
-                        let temp: Record<string, string> = {
-                            nameType: ""
-                        };
-                        setElem(temp);
-                    },
-                    (error) => {
-                        window.location.reload();
-                    }
-                );
-            }
-            // Volunteer
-            else if (name === "volunteer") {
-                getVolunteer().then(
-                    (response) => {
-                        let save = [];
-                        for (let i = 0; i < response.length; i++) {
-                            save.push([response[i].idVolunteer,response[i].name,response[i].surname,response[i].email]);
+                    );
+                }
+                // Volunteer
+                else if (name === "volunteer") {
+                    await getVolunteer().then(
+                        (response) => {
+                            let save = [];
+                            for (let i = 0; i < response.length; i++) {
+                                save.push([response[i].idVolunteer,response[i].name,response[i].surname,response[i].email]);
+                            }
+                            setList(save);
+                            let temp: Record<string, string> = {
+                                name: "",
+                                surname: "",
+                                email: "",
+                            };
+                            setElem(temp);
+                        },
+                        (error) => {
+                            window.location.reload();
                         }
-                        setList(save);
-                        let temp: Record<string, string> = {
-                            name: "",
-                            surname: "",
-                            email: "",
-                        };
-                        setElem(temp);
-                    },
-                    (error) => {
-                        window.location.reload();
-                    }
-                );
-            }
-            // Zone
-            else if (name === "zone") {
-                getZone().then(
-                    (response) => {
-                        let save = [];
-                        for (let i = 0; i < response.length; i++) {
-                            save.push([response[i].idZone,response[i].nameZone]);
+                    );
+                }
+                // Zone
+                else if (name === "zone") {
+                    await getZone().then(
+                        (response) => {
+                            let save = [];
+                            for (let i = 0; i < response.length; i++) {
+                                save.push([response[i].idZone,response[i].nameZone]);
+                            }
+                            setList(save);
+                            let temp: Record<string, string> = {
+                                nameZone: ""
+                            };
+                            setElem(temp);
+                        },
+                        (error) => {
+                            window.location.reload();
                         }
-                        setList(save);
-                        let temp: Record<string, string> = {
-                            nameZone: ""
-                        };
-                        setElem(temp);
-                    },
-                    (error) => {
-                        window.location.reload();
-                    }
-                );
-            }
-            // Activity
-            else if (name === "activity") {
-                getActivity().then(
-                    (response) => {
-                        let save = [];
-                        for (let i = 0; i < response.length; i++) {
-                            save.push([response[i].idActivity,response[i].nameActivity,response[i].type]);
+                    );
+                }
+                // Activity
+                else if (name === "activity") {
+                    await getActivity().then(
+                        (response) => {
+                            let save = [];
+                            for (let i = 0; i < response.length; i++) {
+                                save.push([response[i].idActivity,response[i].nameActivity,response[i].type]);
+                            }
+                            setList(save);
+                            let temp: Record<string, string> = {
+                                nameActivity: "",
+                                type: ""
+                            };
+                            setElem(temp);
+                        },
+                        (error) => {
+                            window.location.reload();
                         }
-                        setList(save);
-                        let temp: Record<string, string> = {
-                            nameActivity: "",
-                            type: ""
-                        };
-                        setElem(temp);
-                    },
-                    (error) => {
-                        window.location.reload();
-                    }
-                );
+                    );
+                }
             }
-        }
+            setIsLoading(false);
+        };
+        fetchData();
     });
 
     /**
@@ -174,43 +181,52 @@ const Management: React.FC<Props> = ({display, name, parent}) => {
                 <article style={styles.title}>
                     <h4>Gestion des {display}</h4>
                 </article>
-                {/* Main management elements */}
-                <article style={styles.main}>
-                    {/* Creation or update form */}
-                    <div style={styles.form}>
-                        <CreationForm parent={parent} name={name} fields={elem} action={action}/>
-                    </div>
-                    {/* List of elements */}
-                    <div style={styles.list}>
-                        {list.map((item) => (
-                            <div> {
-                                <div style={styles.element}>
-                                    <p>{item[1]}</p>
-                                    <Button style={styles.button} variant="contained" color="error" onClick={() => { remove(item) }}>🗑️</Button>
-                                    <Button style={styles.button} variant="contained" color="primary" onClick={() => {
-                                        setAction("update");
-                                        // Type
-                                        if (name === "type") {
-                                            setElem({idType: item[0], nameType: item[1]})
-                                        }
-                                        // Volunteer
-                                        else if (name === "volunteer") {
-                                            setElem({idVolunteer: item[0], name: item[1], surname: item[2], email: item[3]})
-                                        }
-                                        // Zone
-                                        else if (name === "zone") {
-                                            setElem({idZone: item[0], nameZone: item[1]})
-                                        }
-                                        // Activity
-                                        else if (name === "activity") {
-                                            setElem({idActivity: item[0], nameActivity: item[1], type: item[2]})
-                                        }
-                                    }}>🔄</Button>
-                                </div>
-                            } </div>
-                        ))}
-                    </div>
-                </article>
+                { isLoading ? 
+                    /* Loading */
+                    <article>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', margin: '30px' }}>
+                            <CircularProgress />
+                        </Box>
+                    </article>
+                    :
+                    /* Main management elements */
+                    <article style={styles.main}>
+                        {/* Creation or update form */}
+                        <div style={styles.form}>
+                            <CreationForm parent={parent} name={name} fields={elem} action={action}/>
+                        </div>
+                        {/* List of elements */}
+                        <div style={styles.list}>
+                            {list.map((item) => (
+                                <div> {
+                                    <div style={styles.element}>
+                                        <p>{item[1]}</p>
+                                        <Button style={styles.button} variant="contained" color="error" onClick={() => { remove(item) }}>🗑️</Button>
+                                        <Button style={styles.button} variant="contained" color="primary" onClick={() => {
+                                            setAction("update");
+                                            // Type
+                                            if (name === "type") {
+                                                setElem({idType: item[0], nameType: item[1]})
+                                            }
+                                            // Volunteer
+                                            else if (name === "volunteer") {
+                                                setElem({idVolunteer: item[0], name: item[1], surname: item[2], email: item[3]})
+                                            }
+                                            // Zone
+                                            else if (name === "zone") {
+                                                setElem({idZone: item[0], nameZone: item[1]})
+                                            }
+                                            // Activity
+                                            else if (name === "activity") {
+                                                setElem({idActivity: item[0], nameActivity: item[1], type: item[2]})
+                                            }
+                                        }}>🔄</Button>
+                                    </div>
+                                } </div>
+                            ))}
+                        </div>
+                    </article>
+                }
             </section>
         </div>
     );

@@ -6,6 +6,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { getActivity } from "../services/activity.service"
 import { getType } from "../services/type.service";
@@ -31,9 +32,10 @@ const BoardActivity: React.FC<Props> = ({backMenu}) => {
   const [tagType, setTagType] = useState('0');
   const [tagZone, setTagZone] = useState('0');
   const [zone, setZone] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       // Activity
       const activity = await getActivity().then(
         (response) => {
@@ -71,7 +73,6 @@ const BoardActivity: React.FC<Props> = ({backMenu}) => {
       );
 
       // Merge activity and activity assignment
-      console.log(activityAssignment)
       let save = []
       for (let i = 0; i < activity.length; i++) {
         for (let j = 0; j < activityAssignment.length; j++) {
@@ -86,6 +87,7 @@ const BoardActivity: React.FC<Props> = ({backMenu}) => {
       save = save.filter((elem:any, index:any, self:any) => index === self.findIndex((t:any) => (t.nameActivity === elem.nameActivity)))
       setSaveList(save)
       setList(save)
+      setIsLoading(false);
     }
     fetchData();
   }, []);
@@ -146,45 +148,61 @@ const BoardActivity: React.FC<Props> = ({backMenu}) => {
         <Button variant="outlined" color="primary" onClick={backMenu}>Retour</Button>
       </header>
       {/* Page */}
-      <section className="searchBar" style={styles.page}>
-        {/* Filter bar */}
-        <article style={styles.filter}>
-          {/* Search bar */}
-          <input style={styles.search} type="text" placeholder="Rechercher" onChange={(event) => filter(undefined, undefined, event.target.value)}/>
-          {/* Type filter */}
-          <Box sx={{ maxWidth: 150 }} style={styles.box}>
-            <FormControl fullWidth>
-              <InputLabel>Type</InputLabel>
-              <Select value={tagType} label="Type" onChange={(event) => filter(undefined, event.target.value)}>
-                <MenuItem value={"0"}>Tous</MenuItem>
-                {type.map((elem:any) => 
-                  <MenuItem value={elem.idType}>{elem.nameType}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Box>
-          {/* Zone filter */}
-          <Box sx={{ maxWidth: 150 }} style={styles.box}>
-            <FormControl fullWidth>
-              <InputLabel>Zone</InputLabel>
-              <Select value={tagZone} label="Zone" onChange={(event) => filter(event.target.value)}>
-                <MenuItem value={"0"}>Tous</MenuItem>
-                {zone.map((elem:any) => 
-                  <MenuItem value={elem.idZone}>{elem.nameZone}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Box>
-        </article>
-        {/* List of elements */}
-        <article style={styles.list}>
-          {list.map((item) => (
-            <div style={styles.element}>
-              <h5>{item.nameActivity}</h5>
-              <p>Type: {item.Type.nameType}</p>
-            </div>
-          ))}
-        </article>
+      <section style={styles.page}>
+        {/* Title */}
+        <section style={styles.title}>
+          <h4>Consultation des jeux</h4>
+        </section>
+        { isLoading ? 
+          /* Loading */
+          <section>
+              <Box sx={{ display: 'flex', justifyContent: 'center', margin: '30px' }}>
+                  <CircularProgress />
+              </Box>
+          </section>
+          :
+          /* Page */
+          <section className="searchBar">
+            {/* Filter bar */}
+            <article style={styles.filter}>
+              {/* Search bar */}
+              <input style={styles.search} type="text" placeholder="Rechercher" onChange={(event) => filter(undefined, undefined, event.target.value)}/>
+              {/* Type filter */}
+              <Box sx={{ maxWidth: 150 }} style={styles.box}>
+                <FormControl fullWidth>
+                  <InputLabel>Type</InputLabel>
+                  <Select value={tagType} label="Type" onChange={(event) => filter(undefined, event.target.value)}>
+                    <MenuItem value={"0"}>Tous</MenuItem>
+                    {type.map((elem:any) => 
+                      <MenuItem value={elem.idType}>{elem.nameType}</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              </Box>
+              {/* Zone filter */}
+              <Box sx={{ maxWidth: 150 }} style={styles.box}>
+                <FormControl fullWidth>
+                  <InputLabel>Zone</InputLabel>
+                  <Select value={tagZone} label="Zone" onChange={(event) => filter(event.target.value)}>
+                    <MenuItem value={"0"}>Tous</MenuItem>
+                    {zone.map((elem:any) => 
+                      <MenuItem value={elem.idZone}>{elem.nameZone}</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              </Box>
+            </article>
+            {/* List of elements */}
+            <article style={styles.list}>
+              {list.map((item) => (
+                <div style={styles.element}>
+                  <h5>{item.nameActivity}</h5>
+                  <p>Type: {item.Type.nameType}</p>
+                </div>
+              ))}
+            </article>
+          </section>
+        }
       </section>
     </div>
   );

@@ -1,6 +1,8 @@
 
 import React, { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 import { getActivityAssignment, createActivityAssignment, deleteActivityAssignment } from "../services/activity_assignment.service";
 import { getActivity } from "../services/activity.service";
@@ -22,39 +24,44 @@ const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
   const [list, setList] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
   const [selected, setSelected] = useState<number>();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Activities assigned to the zone
-    getActivityAssignment(undefined, content.idZone).then(
-      (response) => {
-        setList(response);
-        activities.forEach((item) => {
-          let found = false;
-          response.forEach((item2: { idActivity: any; }) => {
-            if (item.idActivity === item2.idActivity) {
-              found = true;
+    const fetchData = async () => {
+      // Activities assigned to the zone
+      await getActivityAssignment(undefined, content.idZone).then(
+        (response) => {
+          setList(response);
+          activities.forEach((item) => {
+            let found = false;
+            response.forEach((item2: { idActivity: any; }) => {
+              if (item.idActivity === item2.idActivity) {
+                found = true;
+              }
+            });
+            if (!found) {
+              setActivities([...activities, item]);
             }
-          });
-          if (!found) {
-            setActivities([...activities, item]);
           }
+          );
+        },
+        (error) => {
+          window.location.reload();
         }
-        );
-      },
-      (error) => {
-        window.location.reload();
-      }
-    );
-    // All activities
-    getActivity().then(
-      (response) => {
-        setActivities(response);
-        setSelected(response[0].idActivity);
-      },
-      (error) => {
-        window.location.reload();
-      }
-    );
+      );
+      // All activities
+      await getActivity().then(
+        (response) => {
+          setActivities(response);
+          setSelected(response[0].idActivity);
+        },
+        (error) => {
+          window.location.reload();
+        }
+      );
+      setIsLoading(false);
+    }
+    fetchData();
   }, []);
 
   /**
@@ -97,30 +104,46 @@ const DetailAffectZone: React.FC<Props> = ({ parent, content }) => {
       </section>
       {/* Management */}
       <section style={styles.page}>
-        {/* Assign a new activity to the zone */}
-        <article style={styles.assign}>
-          <select style={styles.select} value={selected} onChange={e => {setSelected(parseInt(e.target.value))}}>
-            {activities.map((item) => (
-              <option value={item.idActivity}>{item.nameActivity}</option>
-            ))}
-          </select>
-          <Button style={styles.button} variant="contained" color="primary" onClick={() => {
-            if (selected !== undefined) {
-              createAssignment(selected, content.idZone);
-            }
-          }}>Ajouter</Button>
+        {/* Title */}
+        <article style={styles.title}>
+          <h4>Affectation d'activités à {content.nameZone}</h4>
         </article>
-        {/* List of activities assigned to the zone */}
-        <article>
-          {list.map((item) => (
-            <div style={styles.tile}>
-              <p>{item.Activity.nameActivity}</p>
-              <Button variant="contained" color="error" onClick={() => {
-                removeAssignment(item.ActivityIdActivity, content.idZone)
-              }}>🗑️</Button>
+        { isLoading ? 
+          /* Loading */
+          <article>
+            <Box sx={{ display: 'flex', justifyContent: 'center', margin: '30px' }}>
+              <CircularProgress />
+            </Box>
+          </article>
+          :
+          /* Main content */
+          <article>
+            {/* Assign a new activity to the zone */}
+            <div style={styles.assign}>
+              <select style={styles.select} value={selected} onChange={e => {setSelected(parseInt(e.target.value))}}>
+                {activities.map((item) => (
+                  <option value={item.idActivity}>{item.nameActivity}</option>
+                ))}
+              </select>
+              <Button style={styles.button} variant="contained" color="primary" onClick={() => {
+                if (selected !== undefined) {
+                  createAssignment(selected, content.idZone);
+                }
+              }}>Ajouter</Button>
             </div>
-          ))}
-        </article>
+            {/* List of activities assigned to the zone */}
+            <div>
+              {list.map((item) => (
+                <div style={styles.tile}>
+                  <p>{item.Activity.nameActivity}</p>
+                  <Button variant="contained" color="error" onClick={() => {
+                    removeAssignment(item.ActivityIdActivity, content.idZone)
+                  }}>🗑️</Button>
+                </div>
+              ))}
+            </div>
+          </article>
+        }
       </section>
     </div>
   );
@@ -171,7 +194,12 @@ const styles = {
   button: {
     "marginRight": "30px",
     "marginLeft": "30px",
-  }  
+  },  
+  title: {
+    "padding": "30px",
+    "paddingBottom": "0px",
+    "text-align": "center"
+  }
 }
 
 export default DetailAffectZone;
