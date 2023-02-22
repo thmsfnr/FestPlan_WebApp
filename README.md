@@ -44,3 +44,48 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+
+
+
+## FestPlan_WebApp
+
+<em>FestPlan_WebApp is a generic React web application to manage volunteers for every types of festival.</em>
+
+<strong>Note that for each command present in this file, you have to be in the top directory of the project.</strong>
+
+***
+
+### API points
+
+For each table in the database, the route is built on the following model:
+- Get on `/api/tableName/:elem` to retrieve one or more rows of the table corresponding to this element
+- Put on `/api/tableName/:id` to modify a row of the table corresponding to this id
+- Post on `/api/tableName/` to create a new row
+- Delete on `/api/tableName/:id` to delete a row in the table corresponding to this id
+
+It is important to know that most routes can only be accessed by being an admin, that is, by providing a valid token.
+
+***
+
+### First launch 
+
+To be done in the following order:
+- If node is not installed run `make node`
+- Run `make dependencies` to install the dependencies
+- Set the mysql database access information in `config/db.config.js`
+- Set the jwt secret in `config/auth.config.js`
+- Set the firstExec variable to true in `server.js`
+- Run `make run` to launch the application
+- Set the firstExec variable to false in `server.js`
+
+***
+
+### Normal launch 
+
+To launch the application you just have to run the following command: `make run`
+
+***
+
+## Created by Thomas and Loris.

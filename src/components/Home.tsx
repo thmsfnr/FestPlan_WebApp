@@ -7,18 +7,19 @@ import BoardZone from "./BoardZone"
 import BoardActivity from "./BoardActivity"
 import BoardSlot from "./BoardSlot"
 
+/**
+ * Component for the home page
+ */
 const Home: React.FC = () => {
   const [state, setState] = useState<string>("");
 
   /**
-   * Go back to the base page of the admin board
+   * Go back to the base page of the home
    */
   const back = () => {
     setState("");
   }
 
-
-  
   return (
     <div style={styles.page} className="container">
       {state === "" ?
