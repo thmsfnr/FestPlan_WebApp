@@ -1,8 +1,6 @@
 
 import React, { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
-import '@mobiscroll/react/dist/css/mobiscroll.min.css';
-import { Eventcalendar, getJson, toast, localeFr } from '@mobiscroll/react';
 
 import { getVolunteerAssignment, createVolunteerAssignment, deleteVolunteerAssignment } from "../services/volunteer_assignment.service";
 import { getVolunteer } from "../services/volunteer.service";
@@ -61,12 +59,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
       }
     );
   }, []);
-
-  const onEventClick = React.useCallback((event: any) => {
-    toast({
-        message: event.event.title
-    });
-}, []);
 
 const view = React.useMemo(() => {
   return {
@@ -180,20 +172,6 @@ const view = React.useMemo(() => {
           ))}
         </article>
       </section>
-      <Eventcalendar
-        theme="ios" 
-        themeVariant="light"
-        clickToCreate={true}
-        dragToCreate={true}
-        dragToMove={true}
-        dragToResize={true}
-        eventDelete={true}
-        locale={localeFr}
-        data={myEvents}
-        view={view}
-        onEventClick={onEventClick}
-        onEventCreated={echoes}
-       />
     </div>
   );
 }
