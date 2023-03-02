@@ -87,6 +87,7 @@ const App: React.FC = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<BoardAdmin />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </div>
     </div>

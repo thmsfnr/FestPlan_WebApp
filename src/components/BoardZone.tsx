@@ -1,74 +1,96 @@
+
 import React, { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 import List from "./List";
-import { getZone } from "../services/zone.service"
+import DetailBoardZone from "./DetailBoardZone";
+import { getZone } from "../services/zone.service";
 
- /**
-     * Props of the component
-     */ 
- type Props = {
+/**
+ * Props of the component
+ */ 
+type Props = {
   backMenu: () => void
 }
 
+/**
+ * Component to list volunteers and slots of a zone
+ * @param parent A function to return to the parent component 
+ */
 const BoardZone: React.FC<Props> = ({ backMenu }) => {
   const [state, setState] = useState<boolean>(true);
   const [list, setList] = useState<any[]>([]);
   const [detail,setDetail] = useState<string>("")
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getZone().then(
-      (response) => {setList(response)},
-      (error) => {
-        window.location.reload()
-
-      }
-    );
+    const fetchData = async () => {
+      await getZone().then(
+        (response) => {
+          setList(response)
+        },
+        (error) => {
+          window.location.reload()
+        }
+      );
+      setIsLoading(false);
+    }
+    fetchData();
   }, []);
 
-
-  const parent=(elem : string) => {
+  /**
+   * Manage the click on a list element
+   * @param elem The name of the element clicked
+   */
+  const change=(elem : string) => {
     setState(false)
-    setDetail(elem)
-
+    const save = list.filter((item:any) => item.nameZone === elem)
+    setDetail(save[0])
   }
 
-  const back = () => {
+  /**
+   * Manage the click on the back button
+   */
+  const back= () => {
     setState(true)
-    setDetail("")
   }
-  
 
   return(
     <div className="container">
-      {/* Back button */}
-      <header style={styles.header} className="jumbotron">
-        <Button variant="outlined" color="primary" onClick={backMenu}>Retour</Button>
-      </header>
-      <div>
-        {state ? <List parent={parent} content={list.map((elem:any) => elem.nameZone)}/> : <div></div>}
-        {detail ? <div>
-          <Button variant="contained" color="primary" onClick={back}>
-            Retour
-          </Button>
-          <br></br>
-          <br></br>
-          <h3>{detail}</h3>
-          <br></br>
-          <p>Informations</p>
-        </div> 
-        : <div></div>}
-      </div>
+      <section>
+        {state ? 
+          /* Display the list of zones */
+          <article>
+            <div style={styles.back} className="jumbotron">
+              <Button variant="outlined" color="primary" onClick={backMenu}>Retour</Button>
+            </div>
+            { isLoading ? 
+              <Box sx={{ display: 'flex', justifyContent: 'center', margin: '30px' }}>
+                <CircularProgress />
+              </Box>
+              :
+              <List parent={change} content={list.map((elem:any) => elem.nameZone)}/>
+            }
+          </article> 
+          : 
+          /* Display the detail of the zone */
+          <article>
+            <DetailBoardZone parent={back} content={detail}/>
+          </article>
+        }
+      </section>
     </div>
   );
 }
 
 // CSS-In-JS style attributes (to have a completely autonomous component)
 const styles = {
-  header: {
-    "display": "flex",
-    "justifyContent": "center",
-    "margin": "30px",
+  back: {
+      "margin": "30px",
+      "marginBottom": "30px",
+      "text-align": "center"
   },
 }
 
