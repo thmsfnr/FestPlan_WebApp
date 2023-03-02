@@ -9,12 +9,15 @@ type Props = {
     content: any
 }
 
+/**
+ * Component to display volunteers and slots of a selected zone
+ * @param parent A function to return to the parent component
+ * @returns 
+ */
 const DetailBoardZone: React.FC<Props> = ({ parent, content }) => {
 
     return (
-        <div className="detail-board-zone">
-            <p>{content}</p>
-        </div>
+        <div className="container"></div>
     )
 }
 

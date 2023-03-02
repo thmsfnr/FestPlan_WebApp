@@ -53,6 +53,7 @@ const getData = (setData: any, setLoading: any) => {
       setTimeout(() => {
         setData(data.items);
         setLoading(false);
+        console.log(data.items);
       }, 600);
     });
 };
