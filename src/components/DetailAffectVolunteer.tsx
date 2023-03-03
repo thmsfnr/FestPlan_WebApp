@@ -6,6 +6,24 @@ import { getVolunteerAssignment, createVolunteerAssignment, deleteVolunteerAssig
 import { getVolunteer } from "../services/volunteer.service";
 import { getSlot, createSlot, deleteSlot } from "../services/slot.service";
 
+import Paper from '@mui/material/Paper';
+import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
+import {
+  Scheduler,
+  WeekView,
+  Appointments,
+  Toolbar,
+  ViewSwitcher,
+  MonthView,
+  DayView,
+} from '@devexpress/dx-react-scheduler-material-ui';
+
+const currentDate = '2023-02-14';
+const schedulerData = [
+  { startDate: '2023-02-14T09:45', endDate: '2023-02-14T11:00', title: 'Meeting' },
+  { startDate: '2023-02-14T12:00', endDate: '2023-02-14T13:30', title: 'Go to a gym' },
+];
+
 
 /**
  * Props of the component
@@ -27,6 +45,7 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
   const [myEvents, setEvents] = React.useState<any[]>([]);
 
   useEffect(() => {
+    const fetchData = async () => {
     // Volunteers assigned to the zone
     getVolunteerAssignment(undefined, content.idSlot, content.idZone).then(
       (response) => {
@@ -58,13 +77,10 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
         window.location.reload();
       }
     );
+    }
+    fetchData();
   }, []);
 
-const view = React.useMemo(() => {
-  return {
-      schedule: { type: 'week' } as any
-  };
-}, []);
 
   /**
    * Manage the click on the create button
@@ -118,23 +134,27 @@ const view = React.useMemo(() => {
   }
 
   const echoes = (event: any) => {
-    console.log(list);
-    convertData(list);
+    console.log(myEvents);
+    convertData(myEvents);
+    /* Problème car le convert cherche à le faire dès le départ */
   }
 
   const convertData = (data : any) => {
+    console.log(data);
     let events: any[] = [];
     for (let i = 0; i < data.length; i++) {
       const element = data[i];
       events.push({
+        startDate: element.Slot.startDate,
+        endDate: element.Slot.endDate,
         title: element.Volunteer.name + " " + element.Volunteer.surname,
-        start: element.Slot.startDate,
-        end: element.Slot.endDate,
         color: '#ff6d42'
       });
     }
+    console.log(events[0].startDate);
     setEvents(events);
   }
+
 
   return(
     <div className="container">
@@ -155,7 +175,8 @@ const view = React.useMemo(() => {
           <p>Fin : {content.endDate}</p>
           <Button style={styles.button} variant="contained" color="primary" onClick={() => {
             if (selected !== undefined) {
-              creationSlotThenAssigment(selected, content.startDate, content.endDate);
+              echoes(undefined);
+              {/*creationSlotThenAssigment(selected, content.startDate, content.endDate);
               {/* TODO: Faire le form pour récup les dates et l'heure aussi? */}
             }
           }}>Ajouter</Button>
@@ -172,6 +193,21 @@ const view = React.useMemo(() => {
           ))}
         </article>
       </section>
+      <Paper>
+        <Scheduler
+          data={myEvents}
+        >
+          <ViewState
+            currentDate={currentDate}
+            
+          />
+          <DayView
+            startDayHour={9}
+            endDayHour={17}
+          />
+          <Appointments />
+        </Scheduler>
+      </Paper>
     </div>
   );
 }
