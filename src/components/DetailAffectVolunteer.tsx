@@ -96,6 +96,7 @@ const reducer = (state:any, action:any) => {
       return state;
   }
 };
+
 const currentDate = '2023-02-14';
 const schedulerData = [
   { startDate: '2023-02-14T09:45', endDate: '2023-02-14T11:00', title: 'Meeting' },
@@ -174,7 +175,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
     );
     }
     fetchData();
-    getData(setData, setLoading);
   }, [setData, currentViewName, currentDate]);
 
 
@@ -243,10 +243,8 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
         startDate: element.Slot.startDate,
         endDate: element.Slot.endDate,
         title: element.Volunteer.name + " " + element.Volunteer.surname,
-        color: '#ff6d42'
       });
     }
-    console.log(events[0].startDate);
     setEvents(events);
   }
   
@@ -291,8 +289,9 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
       </section>
       <Paper>
         <Scheduler
-          data={schedulerData}
-          height={660}
+          data={myEvents}
+          height={750}
+          locale="fr-FR"
         >
           <ViewState
             currentDate={currentDate}
