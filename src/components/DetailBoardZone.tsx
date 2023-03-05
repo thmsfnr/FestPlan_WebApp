@@ -35,7 +35,7 @@ const StyledDiv = styled('div')({
   [`&.${classes.toolbarRoot}`]: {
     position: 'relative',
   },
-});
+}); 
 
 const StyledLinearProgress = styled(LinearProgress)(() => ({
   [`&.${classes.progress}`]: {
