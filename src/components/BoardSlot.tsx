@@ -1,42 +1,41 @@
 
 import React, { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
-
-import { getVolunteerAssignment } from "../services/volunteer_assignment.service";
-
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import LinearProgress from '@mui/material/LinearProgress';
-import {
-  ViewState,
-} from '@devexpress/dx-react-scheduler';
-import {
-  Scheduler,
-  WeekView,
-  DayView,
-  MonthView,
-  Appointments,
-  Toolbar,
-  DateNavigator,
-  ViewSwitcher,
-  AppointmentForm,
-  AppointmentTooltip,
-  TodayButton,
-} from '@devexpress/dx-react-scheduler-material-ui';
+import { ViewState } from '@devexpress/dx-react-scheduler';
+import { Scheduler, WeekView, DayView, MonthView, Appointments, Toolbar, DateNavigator, ViewSwitcher, AppointmentForm, AppointmentTooltip, TodayButton } from '@devexpress/dx-react-scheduler-material-ui';
 
-const PREFIX = 'Demo';
+import { getVolunteerAssignment } from "../services/volunteer_assignment.service";
 
+/**
+ * Props of the component
+ */
+type Props = {
+  backMenu: () => void
+}
+
+/** 
+ * Classes for the component
+ */
 const classes = {
-  toolbarRoot: `${PREFIX}-toolbarRoot`,
-  progress: `${PREFIX}-progress`,
+  toolbarRoot: `Demo-toolbarRoot`,
+  progress: `Demo-progress`,
 };
 
+/**
+ * Style for the div component
+ */
 const StyledDiv = styled('div')({
   [`&.${classes.toolbarRoot}`]: {
     position: 'relative',
   },
 });
 
+/**
+ * Style for the LinearProgress component
+ */
 const StyledLinearProgress = styled(LinearProgress)(() => ({
   [`&.${classes.progress}`]: {
     position: 'absolute',
@@ -46,19 +45,27 @@ const StyledLinearProgress = styled(LinearProgress)(() => ({
   },
 }));
 
+/**
+ * Toolbar with loading
+ */
 const ToolbarWithLoading = (
   ({ children, ...restProps }:any ) => (
     <StyledDiv className={classes.toolbarRoot}>
-      <Toolbar.Root {...restProps}>
-        {children}
-      </Toolbar.Root>
-      <StyledLinearProgress className={classes.progress} />
+      <Toolbar.Root {...restProps}>{children}</Toolbar.Root>
+      <StyledLinearProgress className={classes.progress}/>
     </StyledDiv>
   )
 );
 
+/**
+ * Time zone
+ */
 const usaTime = (date: any) => new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
 
+/**
+ * Map the data
+ * @param appointment The appointment
+ */
 const mapAppointmentData = (appointment:any) => ({
   id: appointment.id,
   startDate: usaTime(appointment.start.dateTime),
@@ -66,11 +73,17 @@ const mapAppointmentData = (appointment:any) => ({
   title: appointment.summary,
 });
 
+/**
+ * Get the current date
+ */
 const getCurrentDate = () => {
   const currentDate = new Date();
   return `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
 };
 
+/**
+ * Initial state
+ */
 const initialState = {
   data: [],
   loading: false,
@@ -78,6 +91,11 @@ const initialState = {
   currentViewName: 'Week',
 };
 
+/**
+ * Reducer
+ * @param state The state
+ * @param action The action
+ */
 const reducer = (state:any, action:any) => {
   switch (action.type) {
     case 'setLoading':
@@ -94,13 +112,6 @@ const reducer = (state:any, action:any) => {
 };
 
 /**
- * Props of the component
- */ 
- type Props = {
-  backMenu: () => void
-}
-
-/**
  * Component to list volunteers and zones of a slot
  * @param backMenu A function to return to the parent component
  * @returns 
@@ -108,52 +119,42 @@ const reducer = (state:any, action:any) => {
 const BoardVolunteer: React.FC<Props> = ({ backMenu }) => {
   const [volunteers, setVolunteers] = useState<any[]>([]);
   const [myEvents, setEvents] = React.useState<any[]>([]);
-
+  
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const {
-    data, loading, currentViewName, currentDate,
-  } = state;
-  const setCurrentViewName = React.useCallback((nextViewName:any) => dispatch({
-    type: 'setCurrentViewName', payload: nextViewName,
-  }), [dispatch]);
-  const setData = React.useCallback((nextData:any) => dispatch({
-    type: 'setData', payload: nextData,
-  }), [dispatch]);
-  const setCurrentDate = React.useCallback((nextDate:any) => dispatch({
-    type: 'setCurrentDate', payload: nextDate,
-  }), [dispatch]);
-  const setLoading = React.useCallback((nextLoading:any) => dispatch({
-    type: 'setLoading', payload: nextLoading,
-  }), [dispatch]);
-
+  const { loading, currentViewName, currentDate } = state;
+  const setCurrentViewName = React.useCallback((nextViewName:any) => dispatch({ type: 'setCurrentViewName', payload: nextViewName }), [dispatch]);
+  const setData = React.useCallback((nextData:any) => dispatch({ type: 'setData', payload: nextData }), [dispatch]);
+  const setCurrentDate = React.useCallback((nextDate:any) => dispatch({ type: 'setCurrentDate', payload: nextDate }), [dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
-    // Volunteers assigned to the zone
-    getVolunteerAssignment(undefined).then(
-      (response) => {
-        convertData(response);
-        volunteers.forEach((item) => {
-          let found = false;
-          response.forEach((item2: { idVolunteer: any; }) => {
-            if (item.idVolunteer === item2.idVolunteer) {
-              found = true;
+      getVolunteerAssignment(undefined).then(
+        (response) => {
+          convertData(response);
+          volunteers.forEach((item) => {
+            let found = false;
+            response.forEach((item2: { idVolunteer: any; }) => {
+              if (item.idVolunteer === item2.idVolunteer) {
+                found = true;
+              }
+            });
+            if (!found) {
+              setVolunteers([...volunteers, item]);
             }
           });
-          if (!found) {
-            setVolunteers([...volunteers, item]);
-          }
+        },
+        (error) => {
+          window.location.reload();
         }
-        );
-      },
-      (error) => {
-        window.location.reload();
-      }
-    );
-  }
-  fetchData();
-}, [setData, currentViewName, currentDate]);
+      );
+    }
+    fetchData();
+  }, [setData, currentViewName, currentDate, volunteers]);
 
+  /**
+   * Function to convert data
+   * @param data Data to convert
+   */
   const convertData = (data : any) => {
     let events: any[] = [];
     for (let i = 0; i < data.length; i++) {
@@ -173,41 +174,24 @@ const BoardVolunteer: React.FC<Props> = ({ backMenu }) => {
       <header style={styles.header} className="jumbotron">
         <Button variant="outlined" color="primary" onClick={backMenu}>Retour</Button>
       </header>
-      <Paper>
-        <Scheduler
-          data={myEvents}
-          height={750}
-          locale="fr-FR"
-        >
-          <ViewState
-            currentDate={currentDate}
-            currentViewName={currentViewName}
-            onCurrentViewNameChange={setCurrentViewName}
-            onCurrentDateChange={setCurrentDate}
-          />
-          <DayView
-            startDayHour={7.5}
-            endDayHour={17.5}
-          />
-          <WeekView
-            startDayHour={7.5}
-            endDayHour={17.5}
-          />
-          <MonthView
-          />
-          <Appointments />
-          <Toolbar
-            {...loading ? { rootComponent: ToolbarWithLoading } : null}
-          />
-          <DateNavigator />
-          <TodayButton />
-          <ViewSwitcher />
-          <AppointmentTooltip
-            showCloseButton
-          />
-          <AppointmentForm />
-        </Scheduler>
-      </Paper>
+      {/* Scheduler */}
+      <section>
+        <Paper>
+          <Scheduler data={myEvents} height={750} locale="fr-FR">
+            <ViewState currentDate={currentDate} currentViewName={currentViewName} onCurrentViewNameChange={setCurrentViewName} onCurrentDateChange={setCurrentDate}/>
+            <DayView startDayHour={11} endDayHour={19}/>
+            <WeekView startDayHour={11} endDayHour={19}/>
+            <MonthView/>
+            <Appointments/>
+            <Toolbar {...loading ? { rootComponent: ToolbarWithLoading } : null}/>
+            <DateNavigator/>
+            <TodayButton/>
+            <ViewSwitcher/>
+            <AppointmentTooltip showCloseButton/>
+            <AppointmentForm/>
+          </Scheduler>
+        </Paper>
+      </section>
     </div>
   );
 }
