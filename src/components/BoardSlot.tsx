@@ -119,8 +119,8 @@ const reducer = (state:any, action:any) => {
 const BoardVolunteer: React.FC<Props> = ({ backMenu }) => {
   const [volunteers, setVolunteers] = useState<any[]>([]);
   const [myEvents, setEvents] = React.useState<any[]>([]);
-  const [state, dispatch] = React.useReducer(reducer, initialState);
   
+  const [state, dispatch] = React.useReducer(reducer, initialState);
   const { loading, currentViewName, currentDate } = state;
   const setCurrentViewName = React.useCallback((nextViewName:any) => dispatch({ type: 'setCurrentViewName', payload: nextViewName }), [dispatch]);
   const setData = React.useCallback((nextData:any) => dispatch({ type: 'setData', payload: nextData }), [dispatch]);
@@ -181,10 +181,9 @@ const BoardVolunteer: React.FC<Props> = ({ backMenu }) => {
             <ViewState currentDate={currentDate} currentViewName={currentViewName} onCurrentViewNameChange={setCurrentViewName} onCurrentDateChange={setCurrentDate}/>
             <DayView startDayHour={11} endDayHour={19}/>
             <WeekView startDayHour={11} endDayHour={19}/>
-            <MonthView
-          />
-          <Appointments/>
-          <Toolbar {...loading ? { rootComponent: ToolbarWithLoading } : null}/>
+            <MonthView/>
+            <Appointments/>
+            <Toolbar {...loading ? { rootComponent: ToolbarWithLoading } : null}/>
             <DateNavigator/>
             <TodayButton/>
             <ViewSwitcher/>
