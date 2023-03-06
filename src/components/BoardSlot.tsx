@@ -1,28 +1,13 @@
 
 import React, { useState, useEffect } from "react";
 import Button from '@mui/material/Button';
-
-import { getVolunteerAssignment } from "../services/volunteer_assignment.service";
-
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import LinearProgress from '@mui/material/LinearProgress';
-import {
-  ViewState,
-} from '@devexpress/dx-react-scheduler';
-import {
-  Scheduler,
-  WeekView,
-  DayView,
-  MonthView,
-  Appointments,
-  Toolbar,
-  DateNavigator,
-  ViewSwitcher,
-  AppointmentForm,
-  AppointmentTooltip,
-  TodayButton,
-} from '@devexpress/dx-react-scheduler-material-ui';
+import { ViewState } from '@devexpress/dx-react-scheduler';
+import { Scheduler, WeekView, DayView, MonthView, Appointments, Toolbar, DateNavigator, ViewSwitcher, AppointmentForm, AppointmentTooltip, TodayButton } from '@devexpress/dx-react-scheduler-material-ui';
+
+import { getVolunteerAssignment } from "../services/volunteer_assignment.service";
 
 const PREFIX = 'Demo';
 
@@ -108,24 +93,13 @@ const reducer = (state:any, action:any) => {
 const BoardVolunteer: React.FC<Props> = ({ backMenu }) => {
   const [volunteers, setVolunteers] = useState<any[]>([]);
   const [myEvents, setEvents] = React.useState<any[]>([]);
-
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const {
-    data, loading, currentViewName, currentDate,
-  } = state;
-  const setCurrentViewName = React.useCallback((nextViewName:any) => dispatch({
-    type: 'setCurrentViewName', payload: nextViewName,
-  }), [dispatch]);
-  const setData = React.useCallback((nextData:any) => dispatch({
-    type: 'setData', payload: nextData,
-  }), [dispatch]);
-  const setCurrentDate = React.useCallback((nextDate:any) => dispatch({
-    type: 'setCurrentDate', payload: nextDate,
-  }), [dispatch]);
-  const setLoading = React.useCallback((nextLoading:any) => dispatch({
-    type: 'setLoading', payload: nextLoading,
-  }), [dispatch]);
-
+  
+  const { data, loading, currentViewName, currentDate } = state;
+  const setCurrentViewName = React.useCallback((nextViewName:any) => dispatch({ type: 'setCurrentViewName', payload: nextViewName }), [dispatch]);
+  const setData = React.useCallback((nextData:any) => dispatch({ type: 'setData', payload: nextData }), [dispatch]);
+  const setCurrentDate = React.useCallback((nextDate:any) => dispatch({ type: 'setCurrentDate', payload: nextDate }), [dispatch]);
+  const setLoading = React.useCallback((nextLoading:any) => dispatch({ type: 'setLoading', payload: nextLoading }), [dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
