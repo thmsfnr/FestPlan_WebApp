@@ -1,108 +1,13 @@
 
 import React, { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 import { getVolunteerAssignment, createVolunteerAssignment, deleteVolunteerAssignment } from "../services/volunteer_assignment.service";
 import { getVolunteer } from "../services/volunteer.service";
-import { getSlot, createSlot, deleteSlot } from "../services/slot.service";
-
-import Paper from '@mui/material/Paper';
-import { ViewState, EditingState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
-import {
-  Scheduler,
-  MonthView,
-  WeekView,
-  DayView,
-  Appointments,
-  AppointmentForm,
-  AppointmentTooltip,
-  EditRecurrenceMenu,
-  AllDayPanel,
-  ConfirmationDialog,
-  Toolbar,
-  DateNavigator,
-  ViewSwitcher,
-  TodayButton,
-} from '@devexpress/dx-react-scheduler-material-ui';
-import { styled } from '@mui/material/styles';
-import LinearProgress from '@mui/material/LinearProgress';
-
-
-const PREFIX = 'Demo';
-
-const classes = {
-  toolbarRoot: `${PREFIX}-toolbarRoot`,
-  progress: `${PREFIX}-progress`,
-};
-
-const StyledDiv = styled('div')({
-  [`&.${classes.toolbarRoot}`]: {
-    position: 'relative',
-  },
-});
-
-const StyledLinearProgress = styled(LinearProgress)(() => ({
-  [`&.${classes.progress}`]: {
-    position: 'absolute',
-    width: '100%',
-    bottom: 0,
-    left: 0,
-  },
-}));
-
-const ToolbarWithLoading = (
-  ({ children, ...restProps }:any ) => (
-    <StyledDiv className={classes.toolbarRoot}>
-      <Toolbar.Root {...restProps}>
-        {children}
-      </Toolbar.Root>
-      <StyledLinearProgress className={classes.progress} />
-    </StyledDiv>
-  )
-);
-
-const usaTime = (date: any) => new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
-
-const mapAppointmentData = (appointment:any) => ({
-  id: appointment.id,
-  startDate: usaTime(appointment.start.dateTime),
-  endDate: usaTime(appointment.end.dateTime),
-  title: appointment.summary,
-});
-
-const getCurrentDate = () => {
-  const currentDate = new Date();
-  return `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
-};
-
-const initialState = {
-  data: [],
-  loading: false,
-  currentDate: getCurrentDate(),
-  currentViewName: 'Week',
-};
-
-const reducer = (state:any, action:any) => {
-  switch (action.type) {
-    case 'setLoading':
-      return { ...state, loading: action.payload };
-    case 'setData':
-      return { ...state, data: action.payload.map(mapAppointmentData) };
-    case 'setCurrentViewName':
-      return { ...state, currentViewName: action.payload };
-    case 'setCurrentDate':
-      return { ...state, currentDate: action.payload };
-    default:
-      return state;
-  }
-};
-
-const currentDate = '2023-02-14';
-const schedulerData = [
-  { startDate: '2023-02-14T09:45', endDate: '2023-02-14T11:00', title: 'Meeting' },
-  { startDate: '2023-02-14T12:00', endDate: '2023-02-14T13:30', title: 'Go to a gym' },
-];
-
+import { createSlot } from "../services/slot.service";
+import { TextField } from "@mui/material";
 
 /**
  * Props of the component
@@ -121,31 +26,16 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
   const [list, setList] = useState<any[]>([]);
   const [volunteers, setVolunteers] = useState<any[]>([]);
   const [selected, setSelected] = useState<number>();
-  const [myEvents, setEvents] = React.useState<any[]>([]);
-
-  const [state, dispatch] = React.useReducer(reducer, initialState);
-  const {
-    data, loading, currentViewName, currentDate,
-  } = state;
-  const setCurrentViewName = React.useCallback((nextViewName:any) => dispatch({
-    type: 'setCurrentViewName', payload: nextViewName,
-  }), [dispatch]);
-  const setData = React.useCallback((nextData:any) => dispatch({
-    type: 'setData', payload: nextData,
-  }), [dispatch]);
-  const setCurrentDate = React.useCallback((nextDate:any) => dispatch({
-    type: 'setCurrentDate', payload: nextDate,
-  }), [dispatch]);
-  const setLoading = React.useCallback((nextLoading:any) => dispatch({
-    type: 'setLoading', payload: nextLoading,
-  }), [dispatch]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [startDateSelected, setStartDate] = useState(new Date());
+  const [endDateSelected, setEndDate] = useState(new Date());
 
   useEffect(() => {
     const fetchData = async () => {
     // Volunteers assigned to the zone
     getVolunteerAssignment(undefined, content.idSlot, content.idZone).then(
       (response) => {
-        convertData(response);
+        setList(response);
         volunteers.forEach((item) => {
           let found = false;
           response.forEach((item2: { idVolunteer: any; }) => {
@@ -173,9 +63,10 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
         window.location.reload();
       }
     );
+    setIsLoading(false);
     }
     fetchData();
-  }, [setData, currentViewName, currentDate]);
+  }, []);
 
 
   /**
@@ -198,7 +89,7 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
   /**
    * Manage the click on the delete button 
    * @param idVolunteer Id of the volunteer to delete
-   * @param idZone Id of the zone to delete
+   * @param idSlot Id of the slot to delete
    */
   const removeAssignment = (idVolunteer: number, slot: number) => {
     deleteVolunteerAssignment(idVolunteer, slot).then(
@@ -220,7 +111,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
   const creationSlotThenAssigment = (selected: number, startDate: Date, endDate: Date) => {
     createSlot(startDate, endDate).then(
       (response) => {
-        console.log("Slot created");
         createAssignment(selected, response.idSlot, content.idZone);
       },
       (error) => {
@@ -228,26 +118,66 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
       }
     );
   }
-
-  const echoes = (event: any) => {
-    console.log(myEvents);
-    convertData(myEvents);
-    /* Problème car le convert cherche à le faire dès le départ */
-  }
-
-  const convertData = (data : any) => {
-    let events: any[] = [];
-    for (let i = 0; i < data.length; i++) {
-      const element = data[i];
-      events.push({
-        startDate: element.Slot.startDate,
-        endDate: element.Slot.endDate,
-        title: element.Volunteer.name + " " + element.Volunteer.surname,
-      });
-    }
-    setEvents(events);
-  }
   
+  const cleanDate = (date: Date) => {
+    // Convert the date to a string
+    let newDate = new Date(date);
+    let dateString = newDate.toString();
+    dateString = dateString.substring(4, dateString.length - 46);
+    // Convert the date to the format dd/mm/yyyy
+    dateString = dateString.substring(4, 6) + "/"+ dateString.substring(0, 3) + "/"+ dateString.substring(7, 11) + " : " + dateString.substring(12, 17);
+
+    return dateString;
+  }
+
+  //Verify if input are in the correct format
+  const checkInput = (startDate: string, startTime: string, endDate: string, endTime: string ) => {
+    //Check if the date is in the correct format
+    let ProblemFound = false;
+    let checkFinish = false;
+    while (!ProblemFound && !checkFinish) {
+      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(startDate)) {
+        alert("La date de début doit être au format jj/mm/aaaa");
+        ProblemFound = true;
+      }
+      else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(endDate)) {
+        alert("La date de fin doit être au format jj/mm/aaaa");
+        ProblemFound = true;
+      }
+      //Check if the time is in the correct format
+      else if (!/^\d{2}:\d{2}$/.test(startTime)) {
+        alert("L'heure de début doit être au format hh:mm");
+        ProblemFound = true;
+      }
+      else if (!/^\d{2}:\d{2}$/.test(endTime)) {
+        alert("L'heure de fin doit être au format hh:mm");
+        ProblemFound = true;
+      }
+      if (!ProblemFound) {
+        checkFinish = true;
+      }
+    }
+
+    if (!ProblemFound) {
+    //Invert the date month and day
+    startDate = startDate.substring(3, 5) + "/" + startDate.substring(0, 2) + "/" + startDate.substring(6, 10);
+    endDate = endDate.substring(3, 5) + "/" + endDate.substring(0, 2) + "/" + endDate.substring(6, 10);
+
+
+    //Check if the start date is before the end date
+    let start = new Date(startDate + " " + startTime);
+    let end = new Date(endDate + " " + endTime);
+    if (start > end) {
+      alert("La date de début doit être inférieure à la date de fin");
+    }
+  
+    let dates = [start, end];
+    return dates;
+    }
+    else {
+      return null;
+    }
+  }
 
 
   return(
@@ -260,72 +190,69 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
       <section style={styles.page}>
         {/* Assign a new volunteer to the zone */}
         <article style={styles.assign}>
-          <select style={styles.select} value={selected} onChange={e => {setSelected(parseInt(e.target.value))}}>
-            {volunteers.map((item) => (
-              <option value={item.idVolunteer}>{item.name + " "+ item.surname}</option>
-            ))}
-          </select>
-          <p>Debut : {content.startDate}</p>
-          <p>Fin : {content.endDate}</p>
-          <Button style={styles.button} variant="contained" color="primary" onClick={() => {
-            if (selected !== undefined) {
-              echoes(undefined);
-              {/*creationSlotThenAssigment(selected, content.startDate, content.endDate);
-              {/* TODO: Faire le form pour récup les dates et l'heure aussi? */}
-            }
-          }}>Ajouter</Button>
+          <h4>Affectation de volontaires à {content.nameZone}</h4>
         </article>
-        {/* List of volunteers assigned to the zone */}
-        <article>
-          {list.map((item) => (
-            <div style={styles.tile}>
-              <p>{item.Volunteer.name + " " + item.surname}</p>
-              <Button variant="contained" color="error" onClick={() => {
-                removeAssignment(item.VolunteerIdVolunteer, content.idZone)
-              }}>🗑️</Button>
-            </div>
-          ))}
-        </article>
-      </section>
-      <Paper>
-        <Scheduler
-          data={myEvents}
-          height={750}
-          locale="fr-FR"
-        >
-          <ViewState
-            currentDate={currentDate}
-            currentViewName={currentViewName}
-            onCurrentViewNameChange={setCurrentViewName}
-            onCurrentDateChange={setCurrentDate}
-          />
-          <DayView
-            startDayHour={7.5}
-            endDayHour={17.5}
-          />
-          <WeekView
-            startDayHour={7.5}
-            endDayHour={17.5}
-          />
-          <MonthView
-          />
-          <Appointments />
-          <Toolbar
-            {...loading ? { rootComponent: ToolbarWithLoading } : null}
-          />
-          <DateNavigator />
-          <TodayButton />
-          <ViewSwitcher />
-          <AppointmentTooltip
-            showOpenButton
-            showCloseButton
-            showDeleteButton
-          />
-          <AppointmentForm />
-        </Scheduler>
-      </Paper>
-    </div>
+        { isLoading ?
+          /* Loading */
+          <article>
+            <Box sx={{ display: 'flex', justifyContent: 'center', margin: '30px' }}>
+              <CircularProgress />
+            </Box>
+          </article>
+          :
+          /* Main content */
+          <article>
+            {/* Assign a new volunteer to the zone */}
+            <div style={styles.assign}>
+              <select style={styles.select} value={selected} onChange={e => {setSelected(parseInt(e.target.value))}}>
+              {volunteers.map((item) => (
+                <option value={item.idVolunteer}>{item.name + " "+ item.surname}</option>
+              ))}
+            </select>
+            <p>Debut : {content.startDate}</p>
+            <TextField id="fieldStartDate" placeholder="DD/MM/YYYY" />
+            <TextField id="fieldStartTime" placeholder="HH:MM" />
+            <p>Fin : {content.endDate}</p>
+            <TextField id="fieldEndDate" placeholder="DD/MM/YYYY" />
+            <TextField id="fieldEndTime" placeholder="HH:MM" />
 
+            <Button style={styles.button} variant="contained" color="primary" onClick={() => {
+              if (selected !== undefined) {
+                //get the element in the text field verify if it's not empty and in the right format
+                let startDate = document.getElementById("fieldStartDate") as HTMLInputElement;
+                let startTime = document.getElementById("fieldStartTime") as HTMLInputElement;
+                let endDate = document.getElementById("fieldEndDate") as HTMLInputElement;
+                let endTime = document.getElementById("fieldEndTime") as HTMLInputElement;
+                //Check if the input are not empty
+                if (startDate.value === "" || startTime.value === "" || endDate.value === "" || endTime.value === "") {
+                  alert("Veuillez remplir tous les champs");
+                }
+                else{
+                  let dates = checkInput(startDate.value, startTime.value, endDate.value, endTime.value);
+                  if (dates !== undefined && dates !== null) {
+                    creationSlotThenAssigment(selected, dates[0], dates[1]);
+                  }
+
+                }
+              }
+            }}>Ajouter</Button>
+          </div>
+          {/* List of volunteers assigned to the zone */}
+          <div>
+            {list.map((item) => (
+              <div style={styles.tile}>
+                <p>{item.Volunteer.name + " " + item.Volunteer.surname}</p>
+                <p>{cleanDate(item.Slot.startDate) + " - " + cleanDate(item.Slot.endDate)}</p>
+                <Button variant="contained" color="error" onClick={() => {
+                  removeAssignment(item.VolunteerIdVolunteer, item.Slot.idSlot)
+                }}>🗑️</Button>
+              </div>
+            ))}
+            </div>
+          </article>
+        }
+      </section>
+    </div>
   );
 }
 
@@ -374,7 +301,12 @@ const styles = {
   button: {
     "marginRight": "30px",
     "marginLeft": "30px",
-  }  
+  },  
+  title: {
+    "padding": "30px",
+    "paddingBottom": "0px",
+    "text-align": "center"
+  }
 }
 
 export default DetailAffectVolunteer;
