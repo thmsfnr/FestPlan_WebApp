@@ -27,8 +27,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
   const [volunteers, setVolunteers] = useState<any[]>([]);
   const [selected, setSelected] = useState<number>();
   const [isLoading, setIsLoading] = useState(true);
-  const [startDateSelected, setStartDate] = useState(new Date());
-  const [endDateSelected, setEndDate] = useState(new Date());
 
   useEffect(() => {
     const fetchData = async () => {
