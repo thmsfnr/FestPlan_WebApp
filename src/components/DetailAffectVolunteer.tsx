@@ -27,8 +27,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
   const [volunteers, setVolunteers] = useState<any[]>([]);
   const [selected, setSelected] = useState<number>();
   const [isLoading, setIsLoading] = useState(true);
-  const [startDateSelected, setStartDate] = useState(new Date());
-  const [endDateSelected, setEndDate] = useState(new Date());
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,7 +65,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
     }
     fetchData();
   }, []);
-
 
   /**
    * Manage the click on the create button
@@ -119,6 +116,10 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
     );
   }
   
+  /**
+   * Clean the date to display it
+   * @param date Date to clean
+   */
   const cleanDate = (date: Date) => {
     // Convert the date to a string
     let newDate = new Date(date);
@@ -126,11 +127,16 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
     dateString = dateString.substring(4, dateString.length - 46);
     // Convert the date to the format dd/mm/yyyy
     dateString = dateString.substring(4, 6) + "/"+ dateString.substring(0, 3) + "/"+ dateString.substring(7, 11) + " : " + dateString.substring(12, 17);
-
     return dateString;
   }
 
-  //Verify if input are in the correct format
+  /**
+   * Check if the input is correct
+   * @param startDate Start date of the slot
+   * @param startTime Start time of the slot
+   * @param endDate End date of the slot
+   * @param endTime End time of the slot
+   */
   const checkInput = (startDate: string, startTime: string, endDate: string, endTime: string ) => {
     //Check if the date is in the correct format
     let ProblemFound = false;
@@ -159,26 +165,23 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
     }
 
     if (!ProblemFound) {
-    //Invert the date month and day
-    startDate = startDate.substring(3, 5) + "/" + startDate.substring(0, 2) + "/" + startDate.substring(6, 10);
-    endDate = endDate.substring(3, 5) + "/" + endDate.substring(0, 2) + "/" + endDate.substring(6, 10);
+      //Invert the date month and day
+      startDate = startDate.substring(3, 5) + "/" + startDate.substring(0, 2) + "/" + startDate.substring(6, 10);
+      endDate = endDate.substring(3, 5) + "/" + endDate.substring(0, 2) + "/" + endDate.substring(6, 10);
 
-
-    //Check if the start date is before the end date
-    let start = new Date(startDate + " " + startTime);
-    let end = new Date(endDate + " " + endTime);
-    if (start > end) {
-      alert("La date de début doit être inférieure à la date de fin");
-    }
-  
-    let dates = [start, end];
-    return dates;
-    }
-    else {
+      //Check if the start date is before the end date
+      let start = new Date(startDate + " " + startTime);
+      let end = new Date(endDate + " " + endTime);
+      if (start > end) {
+        alert("La date de début doit être inférieure à la date de fin");
+      }
+    
+      let dates = [start, end];
+      return dates;
+    } else {
       return null;
     }
   }
-
 
   return(
     <div className="container">
@@ -215,7 +218,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
             <p>Fin : {content.endDate}</p>
             <TextField id="fieldEndDate" placeholder="DD/MM/YYYY" />
             <TextField id="fieldEndTime" placeholder="HH:MM" />
-
             <Button style={styles.button} variant="contained" color="primary" onClick={() => {
               if (selected !== undefined) {
                 //get the element in the text field verify if it's not empty and in the right format
@@ -232,7 +234,6 @@ const DetailAffectVolunteer: React.FC<Props> = ({ parent, content }) => {
                   if (dates !== undefined && dates !== null) {
                     creationSlotThenAssigment(selected, dates[0], dates[1]);
                   }
-
                 }
               }
             }}>Ajouter</Button>
@@ -301,6 +302,7 @@ const styles = {
   button: {
     "marginRight": "30px",
     "marginLeft": "30px",
+    "marginTop": "20px",
   },  
   title: {
     "padding": "30px",
